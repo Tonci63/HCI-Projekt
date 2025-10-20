@@ -1,8 +1,8 @@
-##Korisnička Sučelja
+## Korisnička Sučelja
 
 Repozitorij za predmet Korisnička sučelja. U paru Ante Batovanja i Antonio Ćelić.
 
-###HCI-Projekt
+### HCI-Projekt
 
 Aplikacija rješava problem neinformiranosti turista i ostalih posjetitelja Hrvatske o tome što oni zapravo mogu vidjeti na svom putovanju kroz Hrvatsku, koliko će ih to otrilike koštati i koliko vremena će trajati.
 
