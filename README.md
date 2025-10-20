@@ -2,7 +2,7 @@
 
 Repozitorij za predmet Korisnička sučelja. U paru Ante Batovanja i Antonio Ćelić.
 
-### HCI-Projekt
+### ViaCroatia
 
 Aplikacija rješava problem neinformiranosti turista i ostalih posjetitelja Hrvatske o tome što oni zapravo mogu vidjeti na svom putovanju kroz Hrvatsku, koliko će ih to otrilike koštati i koliko vremena će trajati.
 
@@ -12,3 +12,4 @@ Rješenje: aplikacija koja će na jednom mjestu, brzo i jednostavno objasniti tu
 
 Stavarnje ideje: činjenica da je Hrvatska turistička zemlja i brojne informacije o tome kako su turisti nedovoljno pripremljeni došli u posjet Hrvatskoj.
 
+Video pitch: [Watch the video](https://drive.google.com/file/d/1ocm7_QbPRgQYFm3B4eCj52pJuuP4XwQg/view?usp=drive_link)
