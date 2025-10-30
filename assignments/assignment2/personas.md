@@ -114,3 +114,7 @@ The pair stand shoulder-to-shoulder, pitch-ready. His light shirt is crisp, glas
 ### Visual Description:
 
 A silver-haired man in his 60s with a neat beard and black glasses stands calmly in soft morning light. He wears a white field shirt under a tan corduroy vest, pockets full of tools.
+
+## LLM prompts we used 
+
+" Create me a set of user personas ( 3 ) relevant to my tourist app project. "
