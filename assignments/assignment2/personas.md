@@ -1,4 +1,4 @@
-# Project_Personas
+# Personas
 
 ## Persona 1: Emily Carter – The Solo Explorer
 
