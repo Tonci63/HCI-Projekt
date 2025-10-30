@@ -103,9 +103,9 @@ The pair stand shoulder-to-shoulder, pitch-ready. His light shirt is crisp, glas
 
 ### How the app helps:
 
-- offers an easy-to-navigate interface with large, readable text and clear step-by-step trip planning
-- it highlights cultural and historical attractions with verified accessibility details and estimated walking distances
-- the app simplifies decision-making by presenting calm, slow-paced itineraries designed specifically for relaxed cultural travel
+- Offers an easy-to-navigate interface with large, readable text and clear step-by-step trip planning
+- It highlights cultural and historical attractions with verified accessibility details and estimated walking distances
+- The app simplifies decision-making by presenting calm, slow-paced itineraries designed specifically for relaxed cultural travel
 
 ### Key Features Needed:
 
