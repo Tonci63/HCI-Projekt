@@ -48,3 +48,7 @@
 - Saved Reviews / Favorite Articles – Accessible only when logged in
 
 ![Sitemap](./assets/sitemap.png)
+
+## LLM propmts we used
+
+" Create me a detailed information architecture for my project based on card sort from my 3 personas. "
