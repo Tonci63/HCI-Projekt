@@ -25,6 +25,7 @@
 
 - Link to Assignment 1: [**Assignment 1**](assignments/assignment1/)
 - Link to Assignment 2: [**Assignment 2**](/assignments/assignment2/)
+- Link to Assignment 3: [**Assignment 3**](https://viacroatia.vercel.app/)
 
 ## Project Requirements
 
