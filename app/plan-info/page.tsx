@@ -19,7 +19,7 @@ export default function PlanInfoPage() {
         <p
           style={{
             fontSize: "1.2rem",
-            color: "oklch(70.5% 0.015 286.067)a",
+            color: "oklch(70.5% 0.015 286.067)",
             maxWidth: "600px",
             margin: "0 auto",
             marginTop: "1rem",

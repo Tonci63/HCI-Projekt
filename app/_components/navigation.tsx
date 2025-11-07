@@ -31,8 +31,8 @@ export function Navigation() {
                     : "hover:bg-gray-800 text-white"
                 }`}
               >
-                {page.title}{" "}
-              </Link>{" "}
+                {page.title}
+              </Link>
             </li>
           );
         })}{" "}
