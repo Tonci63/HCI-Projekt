@@ -58,8 +58,16 @@ const attractions = [
   },
 ];
 
-export default function AttractionPage({ params }: { params: { id: string } }) {
-  const attraction = attractions.find((a) => a.id === parseInt(params.id));
+type PageProps = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
+export default async function AttractionPage({ params }: PageProps) {
+  const { id } = await params;
+
+  const attraction = attractions.find((a) => a.id === parseInt(id));
 
   if (!attraction) {
     return <div>Attraction not found</div>;
@@ -76,9 +84,11 @@ export default function AttractionPage({ params }: { params: { id: string } }) {
       <Navigation />
 
       <h1>{attraction.title}</h1>
+
       <p>
         <strong>Estimated visit time:</strong> {attraction.travelTime}
       </p>
+
       <p>
         <strong>Accessibility:</strong> {attraction.accessibility}
       </p>
