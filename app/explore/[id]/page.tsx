@@ -1,113 +1,73 @@
-import { Navigation } from "../../_components/navigation";
+// app/explore/[id]/page.tsx
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+import { attractions } from "@/data/attractions";
+import type { Attraction } from "@/data/attractions";
+import { notFound } from "next/navigation";
+import Image from "next/image";
 
-const attractions = [
-  {
-    id: 1,
-    title: "Plitvička Lakes National Park",
-    description:
-      "Plitvička Lakes National Park is a UNESCO World Heritage Site featuring 16 terraced lakes connected by waterfalls. Wooden walkways allow visitors to explore the park closely.",
-    travelTime: "2–4 hours",
-    accessibility: "Partially accessible; some paths are steep",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/5/5f/Plitvice_Lakes.jpg",
-    map: "https://maps.google.com/maps?q=Plitvička%20jezera&t=&z=13&ie=UTF8&iwloc=&output=embed",
-  },
-  {
-    id: 2,
-    title: "Diocletian’s Palace, Split",
-    description:
-      "Built in the 4th century for Roman Emperor Diocletian, this palace forms the historic center of Split and is still actively lived in today.",
-    travelTime: "1–2 hours",
-    accessibility: "Mostly accessible; uneven stone surfaces",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/1/18/Diocletian_Palace_Split.jpg",
-    map: "https://maps.google.com/maps?q=Dioklecijanova%20palača&t=&z=15&ie=UTF8&iwloc=&output=embed",
-  },
-  {
-    id: 3,
-    title: "Dubrovnik Old Town",
-    description:
-      "Dubrovnik Old Town is a perfectly preserved medieval city, famous for its city walls, historic buildings and breathtaking sea views.",
-    travelTime: "2–3 hours",
-    accessibility: "Limited accessibility due to stairs",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/9/97/Dubrovnik_old_city_1.jpg",
-    map: "https://maps.google.com/maps?q=Dubrovnik&t=&z=15&ie=UTF8&iwloc=&output=embed",
-  },
-  {
-    id: 4,
-    title: "Hvar Island",
-    description:
-      "Hvar offers a mix of historic charm, crystal-clear beaches and vibrant nightlife, making it one of Croatia’s most popular islands.",
-    travelTime: "Half day – full day",
-    accessibility: "Good accessibility in town areas",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/3/37/Hvar_Stari_Grad.jpg",
-    map: "https://maps.google.com/maps?q=Hvar&t=&z=15&ie=UTF8&iwloc=&output=embed",
-  },
-  {
-    id: 5,
-    title: "Rovinj",
-    description:
-      "Rovinj is a charming coastal town with Venetian-style architecture, a lively harbor and excellent local cuisine.",
-    travelTime: "1–2 hours",
-    accessibility: "Narrow streets may be challenging",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/7/73/Rovinj_old_town.jpg",
-    map: "https://maps.google.com/maps?q=Rovinj&t=&z=15&ie=UTF8&iwloc=&output=embed",
-  },
-];
-
-type PageProps = {
-  params: Promise<{
-    id: string;
-  }>;
+type Props = {
+  params: { id: string };
 };
 
-export default async function AttractionPage({ params }: PageProps) {
-  const { id } = await params;
-
-  const attraction = attractions.find((a) => a.id === parseInt(id));
+export default function AttractionDetail({ params }: Props) {
+  const attraction = attractions.find((a) => a.id === Number(params.id));
 
   if (!attraction) {
-    return <div>Attraction not found</div>;
+    notFound();
   }
 
+  const staticMapUrl = `https://staticmap.openstreetmap.de/staticmap.php?center=${attraction.lat},${attraction.lng}&zoom=13&size=600x400&markers=${attraction.lat},${attraction.lng},lightblue1`;
+
   return (
-    <div
-      style={{
-        fontFamily: "Arial, sans-serif",
-        maxWidth: "900px",
-        margin: "3rem auto",
-      }}
-    >
-      <Navigation />
+    <main className="container mx-auto px-6 py-12 max-w-5xl">
+      <Link
+        href="/explore"
+        className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-8 text-lg font-medium"
+      >
+        <ArrowLeft className="mr-2 h-5 w-5" /> Back to Explore
+      </Link>
 
-      <h1>{attraction.title}</h1>
+      <h1 className="text-4xl font-bold mb-6">{attraction.name}</h1>
 
-      <p>
-        <strong>Estimated visit time:</strong> {attraction.travelTime}
-      </p>
-
-      <p>
-        <strong>Accessibility:</strong> {attraction.accessibility}
-      </p>
-
-      <img
+      <Image
         src={attraction.image}
-        alt={attraction.title}
-        style={{ width: "100%", borderRadius: "12px", margin: "1rem 0" }}
+        alt={attraction.name}
+        width={1200}
+        height={600}
+        className="w-full h-96 object-cover rounded-xl mb-8 shadow-lg"
       />
 
-      <p>{attraction.description}</p>
+      <p className="text-lg text-gray-700 mb-10 leading-relaxed">
+        {attraction.description}
+      </p>
 
-      <iframe
-        src={attraction.map}
-        width="100%"
-        height="400"
-        style={{ border: 0, borderRadius: "12px", marginTop: "2rem" }}
-        loading="lazy"
-      ></iframe>
-    </div>
+      <div className="grid md:grid-cols-2 gap-10">
+        <div>
+          <h2 className="text-2xl font-semibold mb-4">Travel Time</h2>
+          <p className="text-gray-600">{attraction.travelTime}</p>
+
+          <h2 className="text-2xl font-semibold mt-8 mb-4">Accessibility</h2>
+          <p className="text-gray-600">{attraction.accessibility}</p>
+        </div>
+
+        <div>
+          <h2 className="text-2xl font-semibold mb-4">Location</h2>
+          <div className="rounded-xl overflow-hidden shadow-lg border border-gray-300">
+            <img
+              src={staticMapUrl}
+              alt={`Map of ${attraction.name}`}
+              className="w-full"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-12 text-center">
+        <button className="bg-green-600 text-white px-10 py-4 rounded-lg text-xl font-medium hover:bg-green-700 transition">
+          Add to Itinerary
+        </button>
+      </div>
+    </main>
   );
 }

@@ -3,8 +3,6 @@ import { Navigation } from "../_components/navigation";
 export default function BlogPage() {
   return (
     <div style={{ fontFamily: "Arial, sans-serif" }}>
-      {/* Navigacija na vrhu */}
-      <Navigation />
       <div>
         <h1
           style={{

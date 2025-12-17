@@ -3,9 +3,6 @@ import { Navigation } from "./_components/navigation";
 export default function HomePage() {
   return (
     <div style={{ fontFamily: "Arial, sans-serif" }}>
-      {/* Navigacija na vrhu */}
-      <Navigation />
-
       <div
         style={{
           textAlign: "center",
