@@ -1,5 +1,6 @@
 // app/explore/page.tsx
 import Link from "next/link";
+import Image from "next/image";
 import { attractions } from "@/data/attractions";
 import type { Attraction } from "@/data/attractions";
 
@@ -65,7 +66,7 @@ export default async function ExplorePage({
         ))}
       </div>
 
-      {/* Cards */}
+      {/* Attraction Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
         {paginated.map((attr) => (
           <Link
@@ -73,9 +74,11 @@ export default async function ExplorePage({
             href={`/explore/${attr.id}`}
             className="group block bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200"
           >
-            <img
+            <Image
               src={attr.image}
               alt={attr.name}
+              width={800}
+              height={500}
               className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
             />
             <div className="p-6">

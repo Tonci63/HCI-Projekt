@@ -18,8 +18,6 @@ export default async function AttractionDetail(props: Props) {
     notFound();
   }
 
-  const staticMapUrl = `https://staticmap.openstreetmap.de/staticmap.php?center=${attraction.lat},${attraction.lng}&zoom=13&size=600x400&markers=${attraction.lat},${attraction.lng},lightblue1`;
-
   return (
     <main className="container mx-auto px-6 py-12 max-w-5xl">
       <Link
@@ -54,11 +52,15 @@ export default async function AttractionDetail(props: Props) {
 
         <div>
           <h2 className="text-2xl font-semibold mb-4">Location</h2>
-          <div className="rounded-xl overflow-hidden shadow-lg border border-gray-300">
-            <img
-              src={staticMapUrl}
-              alt={`Map of ${attraction.name}`}
-              className="w-full"
+          <div className="rounded-xl overflow-hidden shadow-lg border border-gray-300 h-96">
+            <iframe
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+              src={`https://www.google.com/maps/embed/v1/view?key=&zoom=13&center=${attraction.lat},${attraction.lng}`}
             />
           </div>
         </div>
