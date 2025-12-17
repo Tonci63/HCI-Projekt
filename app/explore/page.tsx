@@ -19,9 +19,7 @@ export default async function ExplorePage({
 }: {
   searchParams: Promise<{ category?: string; page?: string }>;
 }) {
-  // ←←← THIS IS THE KEY FIX: await searchParams
   const { category = "All", page = "1" } = await searchParams;
-
   const currentCategory = category;
   const currentPage = Math.max(1, Number(page) || 1);
 
@@ -36,7 +34,6 @@ export default async function ExplorePage({
     currentPage * PER_PAGE
   );
 
-  // Build clean URL strings
   const getHref = (newCategory: string, newPage = 1) => {
     const params = new URLSearchParams();
     if (newCategory !== "All") params.set("category", newCategory);

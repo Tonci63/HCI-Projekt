@@ -7,10 +7,11 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
-export default function AttractionDetail({ params }: Props) {
+export default async function AttractionDetail(props: Props) {
+  const params = await props.params;
   const attraction = attractions.find((a) => a.id === Number(params.id));
 
   if (!attraction) {
