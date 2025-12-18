@@ -13,7 +13,7 @@ const categories = [
   "Family-Friendly",
 ] as const;
 
-const PER_PAGE = 5;
+const PER_PAGE = 6;
 
 type Attraction = {
   id: number;
