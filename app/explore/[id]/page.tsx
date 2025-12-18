@@ -1,10 +1,9 @@
-// app/explore/[id]/page.tsx
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 
-const API_URL = "https://6942e05d69b12460f313226c.mockapi.io/attractions"; // Tvoj URL
+const API_URL = "https://6942e05d69b12460f313226c.mockapi.io/attractions";
 
 type Attraction = {
   id: number;
@@ -40,7 +39,9 @@ export default async function AttractionDetail(props: {
         <ArrowLeft className="mr-2 h-5 w-5" /> Back to Explore
       </Link>
 
-      <h1 className="text-4xl font-bold mb-6">{attraction.name}</h1>
+      <h1 className="text-4xl font-bold mb-6 text-gray-50">
+        {attraction.name}
+      </h1>
 
       <Image
         src={attraction.image}
@@ -56,15 +57,21 @@ export default async function AttractionDetail(props: {
 
       <div className="grid md:grid-cols-2 gap-10">
         <div>
-          <h2 className="text-2xl font-semibold mb-4">Travel Time</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-gray-100">
+            Travel Time
+          </h2>
           <p className="text-gray-300">{attraction.travelTime}</p>
 
-          <h2 className="text-2xl font-semibold mt-8 mb-4">Accessibility</h2>
+          <h2 className="text-2xl font-semibold mt-8 mb-4 text-gray-100">
+            Accessibility
+          </h2>
           <p className="text-gray-300">{attraction.accessibility}</p>
         </div>
 
         <div>
-          <h2 className="text-2xl font-semibold mb-4">Location</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-gray-100">
+            Location
+          </h2>
           <div className="rounded-xl overflow-hidden shadow-lg border border-gray-300 h-96">
             <iframe
               width="100%"

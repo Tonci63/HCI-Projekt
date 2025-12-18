@@ -27,6 +27,7 @@ export default function HomePage() {
             margin: "0 auto",
             marginTop: "1rem",
           }}
+          className="text-gray-300"
         >
           Discover the beauty of Croatia, plan your trips, explore hidden gems,
           and create your personalized itineraries.

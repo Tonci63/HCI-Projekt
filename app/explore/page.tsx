@@ -65,7 +65,7 @@ export default async function ExplorePage({
 
   return (
     <div className="container mx-auto p-6 max-w-7xl">
-      <h1 className="text-4xl font-bold mb-8 text-center">
+      <h1 className="text-4xl font-bold mb-8 text-center text-white">
         Explore Croatia Attractions
       </h1>
 

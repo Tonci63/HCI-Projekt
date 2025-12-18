@@ -22,6 +22,7 @@ export default function ItinerariesPage() {
             margin: "0 auto",
             marginTop: "1rem",
           }}
+          className="text-white"
         >
           Browse suggested trips tailored for different personas: Solo
           explorers, Families, and Seniors. Add attractions to your personal

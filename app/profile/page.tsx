@@ -22,6 +22,7 @@ export default function PlanInfoPage() {
             margin: "0 auto",
             marginTop: "1rem",
           }}
+          className="text-white"
         >
           View and update your personal information, manage saved trips,
           favorite reviews, and adjust accessibility settings like font size or

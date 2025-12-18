@@ -22,6 +22,7 @@ export default function PlanInfoPage() {
             margin: "0 auto",
             marginTop: "1rem",
           }}
+          className="text-gray-300"
         >
           Find useful travel tips, budget and ticket info, seasonal weather
           recommendations, and upcoming events to make your trip in Croatia
