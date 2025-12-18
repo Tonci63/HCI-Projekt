@@ -1,8 +1,8 @@
 // app/explore/page.tsx
 import Link from "next/link";
 import Image from "next/image";
-import { attractions } from "@/data/attractions";
-import type { Attraction } from "@/data/attractions";
+
+const API_URL = "https://6942e05d69b12460f313226c.mockapi.io/attractions"; // Tvoj URL
 
 const categories = [
   "All",
@@ -15,19 +15,39 @@ const categories = [
 
 const PER_PAGE = 5;
 
+type Attraction = {
+  id: number;
+  name: string;
+  category: string;
+  shortDesc: string;
+  description: string;
+  image: string;
+  travelTime: string;
+  accessibility: string;
+  lat: number;
+  lng: number;
+};
+
+async function fetchAttractions(): Promise<Attraction[]> {
+  const res = await fetch(API_URL, { cache: "no-store" });
+  if (!res.ok) throw new Error("Failed to fetch attractions");
+  return res.json();
+}
+
 export default async function ExplorePage({
   searchParams,
 }: {
   searchParams: Promise<{ category?: string; page?: string }>;
 }) {
   const { category = "All", page = "1" } = await searchParams;
-  const currentCategory = category;
   const currentPage = Math.max(1, Number(page) || 1);
 
+  const attractions = await fetchAttractions();
+
   const filtered =
-    currentCategory === "All"
+    category === "All"
       ? attractions
-      : attractions.filter((a) => a.category === currentCategory);
+      : attractions.filter((a) => a.category === category);
 
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
   const paginated = filtered.slice(
@@ -56,7 +76,7 @@ export default async function ExplorePage({
             key={cat}
             href={getHref(cat, 1)}
             className={`px-5 py-3 rounded-lg font-medium transition ${
-              currentCategory === cat
+              category === cat
                 ? "bg-blue-600 text-white shadow-md"
                 : "bg-gray-200 text-gray-900 hover:bg-gray-300"
             }`}
@@ -66,7 +86,7 @@ export default async function ExplorePage({
         ))}
       </div>
 
-      {/* Attraction Cards */}
+      {/* Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
         {paginated.map((attr) => (
           <Link
@@ -96,22 +116,27 @@ export default async function ExplorePage({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-6 text-lg">
+        <div className="flex justify-center items-center gap-3 mt-10">
+          {/* Previous */}
           {currentPage > 1 && (
             <Link
-              href={getHref(currentCategory, currentPage - 1)}
-              className="px-6 py-3 bg-gray-300 rounded-lg hover:bg-gray-400 transition"
+              href={getHref(category, currentPage - 1)}
+              className="px-4 py-2 rounded-lg border border-blue-600 text-blue-600 bg-white hover:bg-blue-50 transition font-medium"
             >
               ← Previous
             </Link>
           )}
-          <span className="font-medium">
-            Page {currentPage} of {totalPages}
+
+          {/* Page indicator */}
+          <span className="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold">
+            {currentPage} / {totalPages}
           </span>
+
+          {/* Next */}
           {currentPage < totalPages && (
             <Link
-              href={getHref(currentCategory, currentPage + 1)}
-              className="px-6 py-3 bg-gray-300 rounded-lg hover:bg-gray-400 transition"
+              href={getHref(category, currentPage + 1)}
+              className="px-4 py-2 rounded-lg border border-blue-600 text-blue-600 bg-white hover:bg-blue-50 transition font-medium"
             >
               Next →
             </Link>
