@@ -28,6 +28,7 @@
 - Link to Assignment 3: [**Assignment 3**](https://viacroatia.vercel.app/)
 - Link to Assignment 4: [**Assignment 4**](/assignments/assignment4/fidelity_models.md)
 - Link to Assignment 5: [**Assignment 5**](https://viacroatia.vercel.app/)
+- Link to Assignment 6: [**Assignment 6**](/assignments/assignment6/high_fidelity_models.md)
 
 ## Project Requirements
 
