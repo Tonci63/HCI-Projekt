@@ -39,7 +39,7 @@ export default async function AttractionDetail(props: {
         <ArrowLeft className="mr-2 h-5 w-5" /> Back to Explore
       </Link>
 
-      <h1 className="text-4xl font-bold mb-6 text-gray-50">
+      <h1 className="text-4xl font-bold mb-6 text-black-50">
         {attraction.name}
       </h1>
 
@@ -51,25 +51,25 @@ export default async function AttractionDetail(props: {
         className="w-full h-96 object-cover rounded-xl mb-8 shadow-lg"
       />
 
-      <p className="text-lg text-gray-300 mb-10 leading-relaxed">
+      <p className="text-lg text-black-300 mb-10 leading-relaxed">
         {attraction.description}
       </p>
 
       <div className="grid md:grid-cols-2 gap-10">
         <div>
-          <h2 className="text-2xl font-semibold mb-4 text-gray-100">
+          <h2 className="text-2xl font-semibold mb-4 text-black-100">
             Travel Time
           </h2>
-          <p className="text-gray-300">{attraction.travelTime}</p>
+          <p className="text-black-300">{attraction.travelTime}</p>
 
-          <h2 className="text-2xl font-semibold mt-8 mb-4 text-gray-100">
+          <h2 className="text-2xl font-semibold mt-8 mb-4 text-black-100">
             Accessibility
           </h2>
-          <p className="text-gray-300">{attraction.accessibility}</p>
+          <p className="text-black-300">{attraction.accessibility}</p>
         </div>
 
         <div>
-          <h2 className="text-2xl font-semibold mb-4 text-gray-100">
+          <h2 className="text-2xl font-semibold mb-4 text-black-100">
             Location
           </h2>
           <div className="rounded-xl overflow-hidden shadow-lg border border-gray-300 h-96">
@@ -89,7 +89,7 @@ export default async function AttractionDetail(props: {
               allowFullScreen
             ></iframe>
             <br />
-            <small className="text-gray-300 block text-center mt-2">
+            <small className="text-black-300 block text-center mt-2">
               <a
                 href={`https://www.openstreetmap.org/#map=15/${attraction.lat}/${attraction.lng}`}
                 target="_blank"

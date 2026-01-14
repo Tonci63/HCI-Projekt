@@ -26,8 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen bg-black`}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen bg-white text-gray-900`}
       >
         {/* ←←← ADD YOUR NAVIGATION HERE */}
         <Navigation />
@@ -36,9 +35,10 @@ export default function RootLayout({
         <main className="grow">{children}</main>
 
         {/* Optional: simple footer (you can remove or style later) */}
-        <footer className="bg-black text-white py-6 text-center text-sm border-t border-gray-700">
-          © 2025 ViaCroatia. All rights reserved.
+        <footer className="bg-white text-gray-500 py-6 text-center text-sm border-t">
+            © 2025 ViaCroatia. All rights reserved.
         </footer>
+
       </body>
     </html>
   );

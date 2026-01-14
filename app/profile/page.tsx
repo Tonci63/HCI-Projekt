@@ -6,7 +6,7 @@ export default function PlanInfoPage() {
       <div>
         <h1
           style={{
-            color: "oklch(97.1% 0.013 17.38)",
+            color: "black",
             textAlign: "center",
             marginTop: "5rem",
             fontSize: "3rem",
@@ -17,7 +17,7 @@ export default function PlanInfoPage() {
         <p
           style={{
             fontSize: "1.2rem",
-            color: "oklch(70.5% 0.015 286.067)",
+            color: "black",
             maxWidth: "600px",
             margin: "0 auto",
             marginTop: "1rem",
