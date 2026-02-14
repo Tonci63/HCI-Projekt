@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react"; // Dodan Suspense
 import { useSearchParams } from "next/navigation";
 
 const API_URL = "https://6942e05d69b12460f313226c.mockapi.io/attractions";
@@ -31,13 +31,13 @@ type Attraction = {
   lng: number;
 };
 
-export default function ExplorePage() {
+// 1. Sva tvoja postojeća logika ide u ovu "unutrašnju" komponentu
+function ExploreContent() {
   const searchParams = useSearchParams();
   const [attractions, setAttractions] = useState<Attraction[]>([]);
   const [theme, setTheme] = useState("light");
   const [loading, setLoading] = useState(true);
 
-  // Dohvaćanje kategorije i stranice iz URL-a
   const category = searchParams.get("category") || "All";
   const currentPage = Math.max(1, Number(searchParams.get("page")) || 1);
 
@@ -56,7 +56,6 @@ export default function ExplorePage() {
       }
     };
 
-    // Tema logika (ista kao na detaljima)
     const savedTheme = localStorage.getItem("theme") || "light";
     setTheme(savedTheme);
 
@@ -183,6 +182,16 @@ export default function ExplorePage() {
           </div>
         )}
       </div>
+      
     </div>
+  );
+}
+
+// 2. Glavni export koji samo omotava sadržaj u Suspense
+export default function ExplorePage() {
+  return (
+    <Suspense fallback={<div className="text-center py-20">Loading page...</div>}>
+      <ExploreContent />
+    </Suspense>
   );
 }
