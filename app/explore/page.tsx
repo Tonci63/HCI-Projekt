@@ -1,6 +1,9 @@
-// app/explore/page.tsx
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 const API_URL = "https://6942e05d69b12460f313226c.mockapi.io/attractions";
 
@@ -28,25 +31,47 @@ type Attraction = {
   lng: number;
 };
 
-async function fetchAttractions(): Promise<Attraction[]> {
-  try {
-    const res = await fetch(API_URL, { cache: "no-store" });
-    if (!res.ok) throw new Error("Failed to fetch attractions");
-    return res.json();
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
-}
+export default function ExplorePage() {
+  const searchParams = useSearchParams();
+  const [attractions, setAttractions] = useState<Attraction[]>([]);
+  const [theme, setTheme] = useState("light");
+  const [loading, setLoading] = useState(true);
 
-export default async function ExplorePage({
-  searchParams,
-}: {
-  searchParams: Promise<{ category?: string; page?: string }>;
-}) {
-  const { category = "All", page = "1" } = await searchParams;
-  const currentPage = Math.max(1, Number(page) || 1);
-  const attractions = await fetchAttractions();
+  // Dohvaćanje kategorije i stranice iz URL-a
+  const category = searchParams.get("category") || "All";
+  const currentPage = Math.max(1, Number(searchParams.get("page")) || 1);
+
+  useEffect(() => {
+    const getAttractions = async () => {
+      try {
+        const res = await fetch(API_URL);
+        if (res.ok) {
+          const data = await res.json();
+          setAttractions(data);
+        }
+      } catch (err) {
+        console.error("Error fetching:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Tema logika (ista kao na detaljima)
+    const savedTheme = localStorage.getItem("theme") || "light";
+    setTheme(savedTheme);
+
+    const handleStorage = () => {
+      setTheme(localStorage.getItem("theme") || "light");
+    };
+
+    getAttractions();
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
+  if (loading) return <div className="text-center py-20">Loading attractions...</div>;
+
+  const isDark = theme === "dark";
 
   const filtered =
     category === "All"
@@ -68,84 +93,96 @@ export default async function ExplorePage({
   };
 
   return (
-    <div className="container mx-auto pt-12 pb-16 px-6 max-w-7xl bg-white min-h-screen">
-      
-      {/* Filter Bar */}
-      <div className="flex flex-wrap justify-center gap-3 mb-12">
-        {categories.map((cat) => (
-          <Link
-            key={cat}
-            href={getHref(cat, 1)}
-            className={`px-5 py-3 rounded-lg font-medium transition ${
-              category === cat
-                ? "bg-blue-600 text-white shadow-md"
-                : "bg-gray-200 text-gray-900 hover:bg-gray-300"
-            }`}
-          >
-            {cat}
-          </Link>
-        ))}
-      </div>
-
-      {/* Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-        {paginated.map((attr) => (
-          <Link
-            key={attr.id}
-            href={`/explore/${attr.id}`}
-            className="group block bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200"
-          >
-            <div className="relative h-56 w-full overflow-hidden">
-                <Image
-                src={attr.image}
-                alt={attr.name}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-            </div>
-            <div className="p-6">
-              {/* Naslov koji poplavi na hover */}
-              <h2 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-300">
-                {attr.name}
-              </h2>
-              <p className="text-gray-600 line-clamp-3">{attr.shortDesc}</p>
-              
-              {/* Strelica koja pobjegne udesno na hover */}
-              <span className="inline-flex items-center mt-4 text-blue-600 font-medium group-hover:underline">
-                View Details 
-                <span className="ml-1 transition-transform duration-300 group-hover:translate-x-1">→</span>
-              </span>
-            </div>
-          </Link>
-        ))}
-      </div>
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-3 mt-10">
-          {currentPage > 1 && (
+    <div style={{ 
+      backgroundColor: isDark ? "#1a1a1a" : "#ffffff", 
+      color: isDark ? "#ffffff" : "#000000",
+      minHeight: "100vh",
+      transition: "background-color 0.3s ease"
+    }}>
+      <div className="container mx-auto pt-12 pb-16 px-6 max-w-7xl">
+        
+        {/* Filter Bar */}
+        <div className="flex flex-wrap justify-center gap-3 mb-12">
+          {categories.map((cat) => (
             <Link
-              href={getHref(category, currentPage - 1)}
-              className="px-4 py-2 rounded-lg border border-blue-600 text-blue-600 bg-white hover:bg-blue-50 transition font-medium"
+              key={cat}
+              href={getHref(cat, 1)}
+              className={`px-5 py-3 rounded-lg font-medium transition ${
+                category === cat
+                  ? "bg-blue-600 text-white shadow-md"
+                  : isDark ? "bg-[#262626] text-white hover:bg-[#333]" : "bg-gray-200 text-gray-900 hover:bg-gray-300"
+              }`}
             >
-              ← Previous
+              {cat}
             </Link>
-          )}
-
-          <span className="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold">
-            {currentPage} / {totalPages}
-          </span>
-
-          {currentPage < totalPages && (
-            <Link
-              href={getHref(category, currentPage + 1)}
-              className="px-4 py-2 rounded-lg border border-blue-600 text-blue-600 bg-white hover:bg-blue-50 transition font-medium"
-            >
-              Next →
-            </Link>
-          )}
+          ))}
         </div>
-      )}
+
+        {/* Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          {paginated.map((attr) => (
+            <Link
+              key={attr.id}
+              href={`/explore/${attr.id}`}
+              style={{ 
+                backgroundColor: isDark ? "#262626" : "#ffffff",
+                borderColor: isDark ? "#333" : "#e5e7eb"
+              }}
+              className="group block rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border"
+            >
+              <div className="relative h-56 w-full overflow-hidden">
+                <Image
+                  src={attr.image}
+                  alt={attr.name}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  unoptimized
+                />
+              </div>
+              <div className="p-6">
+                <h2 className={`text-2xl font-bold mb-2 group-hover:text-blue-600 transition-colors duration-300 ${isDark ? "text-white" : "text-gray-900"}`}>
+                  {attr.name}
+                </h2>
+                <p className={`${isDark ? "text-gray-400" : "text-gray-600"} line-clamp-3`}>{attr.shortDesc}</p>
+                
+                <span className="inline-flex items-center mt-4 text-blue-600 font-medium group-hover:underline">
+                  View Details 
+                  <span className="ml-1 transition-transform duration-300 group-hover:translate-x-1">→</span>
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-3 mt-10">
+            {currentPage > 1 && (
+              <Link
+                href={getHref(category, currentPage - 1)}
+                style={{ backgroundColor: isDark ? "#262626" : "#ffffff" }}
+                className="px-4 py-2 rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50 transition font-medium"
+              >
+                ← Previous
+              </Link>
+            )}
+
+            <span className="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold">
+              {currentPage} / {totalPages}
+            </span>
+
+            {currentPage < totalPages && (
+              <Link
+                href={getHref(category, currentPage + 1)}
+                style={{ backgroundColor: isDark ? "#262626" : "#ffffff" }}
+                className="px-4 py-2 rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50 transition font-medium"
+              >
+                Next →
+              </Link>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

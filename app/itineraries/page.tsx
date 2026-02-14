@@ -3,32 +3,39 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
+interface Attraction {
+  id: string;
+  name: string;
+  image: string;
+  travelTime: string;
+  isPriority?: boolean;
+}
+
 interface Trip {
   id: string;
   title: string;
-  description: string;
   image: string;
 }
 
 export default function ItinerariesPage() {
   const suggestedTrips: Trip[] = [
-    { id: "1", title: "Solo Explorer", description: "Hidden gems, beaches, local food tours", image: "/solo.jpg" },
-    { id: "2", title: "Family Trip", description: "Kid-friendly attractions, safe spots", image: "/family2.avif" },
-    { id: "3", title: "Senior Friendly", description: "Accessible routes, cultural sights", image: "/senior3.jpg" },
+    { id: "1", title: "Solo Explorer", image: "/solo.jpg" },
+    { id: "2", title: "Family Trip", image: "/family2.avif" },
+    { id: "3", title: "Senior Friendly", image: "/senior3.jpg" },
   ];
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [myItineraries, setMyItineraries] = useState<Trip[]>([]);
-  const [theme, setTheme] = useState("light");
+  const [myAttractions, setMyAttractions] = useState<Attraction[]>([]);
+  const [theme, setTheme] = useState<string>("light");
 
   useEffect(() => {
     const syncData = () => {
-      setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
       setTheme(localStorage.getItem("theme") || "light");
-      const stored = localStorage.getItem("myItineraries");
-      if (stored) setMyItineraries(JSON.parse(stored));
+      const storedTrips = localStorage.getItem("myItineraries");
+      if (storedTrips) setMyItineraries(JSON.parse(storedTrips));
+      const storedAttr = localStorage.getItem("myItinerary");
+      if (storedAttr) setMyAttractions(JSON.parse(storedAttr));
     };
-
     syncData();
     window.addEventListener("storage", syncData);
     return () => window.removeEventListener("storage", syncData);
@@ -36,190 +43,178 @@ export default function ItinerariesPage() {
 
   const isDark = theme === "dark";
 
-  const handleSaveTrip = (tripId: string) => {
-    if (!isLoggedIn) {
-      alert("Please log in to save trips!");
-      return;
-    }
-    const localTrip = suggestedTrips.find(t => t.id === tripId);
-    if (myItineraries.some((t) => t.id === tripId)) {
-      alert("Trip already saved!");
-      return;
-    }
-    const updated = [...myItineraries, localTrip as Trip];
+  const calculateTotalTime = (items: Attraction[]) => {
+    let totalMinutes = 0;
+    items.forEach(attr => {
+      const timeStr = attr.travelTime?.toLowerCase() || "";
+      const num = parseFloat(timeStr);
+      if (isNaN(num)) return;
+      if (timeStr.includes("h")) totalMinutes += num * 60;
+      else if (timeStr.includes("min")) totalMinutes += num;
+    });
+    const h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    return h > 0 ? `${h}h ${m}min` : `${m}min`;
+  };
+
+  const handleSaveTrip = (trip: Trip) => {
+    if (myItineraries.find(t => t.id === trip.id)) return;
+    const updated = [...myItineraries, trip];
     setMyItineraries(updated);
     localStorage.setItem("myItineraries", JSON.stringify(updated));
     window.dispatchEvent(new Event("storage"));
-    alert(`Trip saved!`);
   };
 
-  const handleRemoveTrip = (id: string) => {
-    const updated = myItineraries.filter((t) => t.id !== id);
-    setMyItineraries(updated);
-    localStorage.setItem("myItineraries", JSON.stringify(updated));
+  const togglePriority = (e: React.MouseEvent, id: string) => {
+    e.preventDefault(); e.stopPropagation();
+    const updated = myAttractions.map(attr => 
+      attr.id === id ? { ...attr, isPriority: !attr.isPriority } : attr
+    ).sort((a, b) => Number(b.isPriority) - Number(a.isPriority));
+    setMyAttractions(updated);
+    localStorage.setItem("myItinerary", JSON.stringify(updated));
+  };
+
+  const handleRemove = (e: React.MouseEvent, id: string, type: "attr" | "trip") => {
+    e.preventDefault(); e.stopPropagation();
+    if (type === "attr") {
+      const updated = myAttractions.filter(a => a.id !== id);
+      setMyAttractions(updated);
+      localStorage.setItem("myItinerary", JSON.stringify(updated));
+    } else {
+      const updated = myItineraries.filter(t => t.id !== id);
+      setMyItineraries(updated);
+      localStorage.setItem("myItineraries", JSON.stringify(updated));
+    }
     window.dispatchEvent(new Event("storage"));
   };
 
   return (
-    <div style={{ 
-      backgroundColor: isDark ? "#1a1a1a" : "#ffffff", 
-      color: isDark ? "#ffffff" : "#111827",
-      minHeight: "100vh",
-      transition: "all 0.3s ease" 
-    }}>
-      <div style={{ 
-        padding: "4rem 1.5rem", 
-        textAlign: "center", 
-        borderBottom: `1px solid ${isDark ? "#333" : "#eee"}`,
-        backgroundColor: isDark ? "#1f1f1f" : "#f9fafb" 
-      }}>
-        <h1 style={{ fontSize: "2.5rem", fontWeight: "800", marginBottom: "1rem", textTransform: "uppercase" }}>
-          Plan Your Croatian Adventure
-        </h1>
-        <p style={{ opacity: 0.7, fontSize: "1.1rem", fontStyle: "italic" }}>
-          Expertly crafted routes for every type of traveler.
-        </p>
-      </div>
+    <div style={{ backgroundColor: isDark ? "#121212" : "#ffffff", color: isDark ? "#ffffff" : "#1e293b", minHeight: "100vh", transition: "0.3s" }}>
+      
+      <header style={{ padding: "3rem 1rem", textAlign: "center", borderBottom: `1px solid ${isDark ? "#222" : "#f1f5f9"}` }}>
+        <h1 style={{ fontSize: "2.2rem", fontWeight: "900", letterSpacing: "-1px", marginBottom: "0.5rem" }}>ADVENTURE PLANNER</h1>
+        <p style={{ fontSize: "1rem", opacity: 0.7 }}>Organize your spots and explore curated travel routes.</p>
+      </header>
 
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "3rem 1.5rem" }}>
+      <main style={{ maxWidth: "1200px", margin: "0 auto", padding: "2.5rem 1.5rem" }}>
         
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2.5rem", flexWrap: "wrap", gap: "15px" }}>
-          <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", display: "flex", alignItems: "center", gap: "10px" }}>
-            <span style={{ backgroundColor: "#2563eb", width: "6px", height: "30px", borderRadius: "10px" }}></span> 
-            Suggested Itineraries
-          </h2>
-
-          <div style={{ 
-            display: "flex", alignItems: "center", gap: "10px", 
-            backgroundColor: isDark ? "#1e3a8a33" : "#eff6ff", 
-            padding: "8px 16px", borderRadius: "20px", border: `1px solid ${isDark ? "#1e40af" : "#dbeafe"}` 
-          }}>
-            <span style={{ position: "relative", display: "flex", height: "10px", width: "10px" }}>
-              <span className="animate-ping" style={{ position: "absolute", height: "100%", width: "100%", borderRadius: "50%", backgroundColor: "#3b82f6", opacity: 0.75 }}></span>
-              <span style={{ position: "relative", borderRadius: "50%", height: "10px", width: "10px", backgroundColor: "#2563eb" }}></span>
-            </span>
-            <span style={{ fontSize: "0.75rem", fontWeight: "bold", color: isDark ? "#60a5fa" : "#1e40af", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-              Plans updated weekly
-            </span>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
+          <h2 style={{ fontSize: "1.5rem", fontWeight: "800" }}>Recommended for you</h2>
+          <div className="badge-weekly">
+            <span className="dot-container"><span className="dot-ping"></span><span className="dot-main"></span></span>
+            <span style={{ fontSize: "0.75rem", fontWeight: "900", color: "#3b82f6" }}>UPDATED WEEKLY</span>
           </div>
         </div>
-        
+
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "2rem", marginBottom: "5rem" }}>
-          {suggestedTrips.map((trip) => (
-            <div key={trip.id} style={{ 
-              backgroundColor: isDark ? "#262626" : "#ffffff",
-              border: `1px solid ${isDark ? "#333" : "#eee"}`,
-              borderRadius: "20px",
-              overflow: "hidden",
-              display: "flex",
-              flexDirection: "column",
-              position: "relative"
-            }}>
-              <div style={{ width: "100%", height: "220px", overflow: "hidden", position: "relative" }}>
-                <img 
-                  src={trip.image} 
-                  alt={trip.title} 
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }} 
-                />
-                <div style={{ position: "absolute", top: "15px", left: "15px" }}>
-                  <span style={{ backgroundColor: "rgba(255,255,255,0.9)", color: "#2563eb", fontSize: "0.65rem", fontWeight: "bold", padding: "4px 10px", borderRadius: "20px", textTransform: "uppercase" }}>
-                    Verified Plan
-                  </span>
-                </div>
-              </div>
-              
-              <div style={{ padding: "1.5rem", textAlign: "center", flexGrow: 1, display: "flex", flexDirection: "column" }}>
-                <h3 style={{ fontSize: "1.5rem", fontWeight: "bold", marginBottom: "0.5rem" }}>{trip.title}</h3>
-                <p style={{ fontSize: "0.9rem", opacity: 0.6, marginBottom: "1.5rem" }}>{trip.description}</p>
-                
-                <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "10px" }}>
-                  <Link href={`/itineraries/${trip.id}`} style={{ backgroundColor: "#2563eb", color: "white", padding: "12px", borderRadius: "12px", fontWeight: "bold", textDecoration: "none" }}>
-                    View Details
-                  </Link>
-                  <button onClick={() => handleSaveTrip(trip.id)} style={{ 
-                    border: "2px solid #16a34a", color: "#16a34a", padding: "10px", 
-                    borderRadius: "12px", fontWeight: "bold", backgroundColor: "transparent", cursor: "pointer" 
-                  }}>
-                    Save to My Trips
-                  </button>
+          {suggestedTrips.map(trip => (
+            <div key={trip.id} className="suggested-card" style={{ backgroundColor: isDark ? "#1e1e1e" : "#ffffff", borderRadius: "24px", overflow: "hidden", border: `1px solid ${isDark ? "#333" : "#e2e8f0"}`, position: "relative", transition: "0.3s" }}>
+              <div style={{ position: "absolute", top: "15px", left: "15px", zIndex: 10, background: "rgba(255,255,255,0.9)", padding: "4px 10px", borderRadius: "10px", fontSize: "0.65rem", fontWeight: "bold", color: "#2563eb" }}>✓ VERIFIED</div>
+              <div style={{ height: "200px", overflow: "hidden" }}><img src={trip.image} className="card-image" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "0.5s" }} /></div>
+              <div style={{ padding: "1.5rem", textAlign: "center" }}>
+                <h3 style={{ fontWeight: "800", fontSize: "1.2rem", marginBottom: "1.2rem" }}>{trip.title}</h3>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                  <Link href={`/itineraries/${trip.id}`} style={{ backgroundColor: "#2563eb", color: "white", padding: "12px", borderRadius: "14px", textDecoration: "none", fontWeight: "bold", fontSize: "0.9rem" }}>View Details</Link>
+                  <button onClick={() => handleSaveTrip(trip)} className="btn-save" style={{ border: `2px solid #16a34a`, color: "#16a34a", padding: "10px", borderRadius: "14px", background: "transparent", cursor: "pointer", fontWeight: "bold", fontSize: "0.9rem" }}>Save Trip</button>
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        <div style={{ 
-          backgroundColor: isDark ? "#212121" : "#f3f4f6", 
-          borderRadius: "32px", 
-          padding: "2.5rem", 
-          border: `1px solid ${isDark ? "#333" : "#e5e7eb"}` 
-        }}>
-          <h2 style={{ fontSize: "2rem", fontWeight: "bold", textAlign: "center", marginBottom: "2.5rem", textTransform: "uppercase" }}>
-            My Saved Journey
-          </h2>
+        <div style={{ backgroundColor: isDark ? "#1a1a1a" : "#f8fafc", borderRadius: "40px", padding: "3rem", border: `1px solid ${isDark ? "#262626" : "#e2e8f0"}` }}>
+          <h2 style={{ fontSize: "2rem", fontWeight: "900", textAlign: "center", marginBottom: "3.5rem", color: "#2563eb" }}>MY SAVED JOURNEY</h2>
           
-          {!isLoggedIn ? (
-            <div style={{ textAlign: "center", padding: "2rem", backgroundColor: isDark ? "#262626" : "#fff", borderRadius: "20px", border: "2px dashed #ccc" }}>
-              <p style={{ opacity: 0.5 }}>Please log in to see your personalized itineraries.</p>
-            </div>
-          ) : myItineraries.length === 0 ? (
-            <p style={{ textAlign: "center", opacity: 0.4, fontStyle: "italic" }}>Your list is empty. Start adding some adventures!</p>
-          ) : (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "1.5rem" }}>
-              {myItineraries.map((trip) => (
-                <div key={trip.id} style={{ 
-                  backgroundColor: isDark ? "#262626" : "#fff", 
-                  padding: "1.2rem", 
-                  borderRadius: "20px", 
-                  border: `1px solid ${isDark ? "#333" : "#eee"}`,
-                  display: "flex",
-                  flexDirection: "column",
-                  boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)"
-                }}>
-                  <div style={{ width: "100%", height: "140px", overflow: "hidden", borderRadius: "12px", marginBottom: "1rem" }}>
-                    <img 
-                      src={trip.image} 
-                      alt={trip.title} 
-                      style={{ width: "100%", height: "100%", objectFit: "cover" }} 
-                    />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))", gap: "3.5rem" }}>
+            
+            <section>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "3px solid #2563eb", paddingBottom: "10px", marginBottom: "2rem" }}>
+                <h3 style={{ fontWeight: "800", margin: 0 }}>Locations</h3>
+                <span style={{ color: "#2563eb", fontWeight: "900", fontSize: "0.9rem" }}>{calculateTotalTime(myAttractions)}</span>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
+                {myAttractions.length === 0 ? (
+                  <div style={{ padding: "3rem 1rem", border: "2px dashed #cbd5e1", borderRadius: "20px", textAlign: "center", opacity: 0.8 }}>
+                    <p style={{ fontSize: "0.9rem", fontWeight: "600", marginBottom: "1.5rem" }}>No locations saved yet.</p>
+                    <Link href="/explore" style={{ 
+                      display: "inline-block", padding: "10px 20px", borderRadius: "12px", 
+                      border: "1px solid #2563eb", color: "#2563eb", textDecoration: "none", 
+                      fontSize: "0.85rem", fontWeight: "bold", transition: "0.2s" 
+                    }} className="empty-state-btn">Start Exploring</Link>
                   </div>
-                  
-                  <h3 style={{ fontWeight: "bold", marginBottom: "15px", fontSize: "1.1rem" }}>{trip.title}</h3>
-                  
-                  <button onClick={() => handleRemoveTrip(trip.id)} style={{ 
-                    marginTop: "auto", 
-                    color: "#ef4444", 
-                    fontSize: "0.8rem", 
-                    fontWeight: "700", 
-                    backgroundColor: isDark ? "#450a0a33" : "#fef2f2", 
-                    border: "1px solid #fee2e2", 
-                    borderRadius: "10px",
-                    padding: "8px 12px",
-                    cursor: "pointer", 
-                    textTransform: "uppercase",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "6px",
-                    transition: "all 0.2s ease"
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.backgroundColor = "#ef4444";
-                    e.currentTarget.style.color = "white";
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.backgroundColor = isDark ? "#450a0a33" : "#fef2f2";
-                    e.currentTarget.style.color = "#ef4444";
-                  }}
-                  >
-                    <span style={{ fontSize: "1rem" }}>🗑</span> Remove Trip
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
+                ) : (
+                  myAttractions.map(attr => (
+                    <Link key={attr.id} href={`/explore/${attr.id}`} className="saved-link-wrapper">
+                      <div className="saved-row" style={{ backgroundColor: isDark ? "#262626" : "white", padding: "14px", borderRadius: "20px", display: "flex", alignItems: "center", gap: "15px", border: attr.isPriority ? "2px solid #eab308" : `1px solid ${isDark ? "#333" : "#eee"}`, position: "relative" }}>
+                        <img src={attr.image} style={{ width: "55px", height: "55px", borderRadius: "12px", objectFit: "cover" }} />
+                        <div style={{ flex: 1 }}><h4 style={{ fontWeight: "bold", fontSize: "0.95rem", margin: 0 }}>{attr.name}</h4><p style={{ fontSize: "0.75rem", opacity: 0.5, margin: 0 }}>{attr.travelTime}</p></div>
+                        <button onClick={(e) => togglePriority(e, attr.id)} className="btn-priority" style={{ background: "none", border: "none", cursor: "pointer", color: attr.isPriority ? "#eab308" : "#ccc", fontSize: "1.4rem" }}>★</button>
+                        <button onClick={(e) => handleRemove(e, attr.id, "attr")} className="btn-remove-text">REMOVE</button>
+                      </div>
+                    </Link>
+                  ))
+                )}
+              </div>
+            </section>
+
+            <section>
+              <h3 style={{ borderBottom: "3px solid #16a34a", paddingBottom: "10px", marginBottom: "2rem", fontWeight: "800" }}>Trip Plans</h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
+                {myItineraries.length === 0 ? (
+                  <div style={{ padding: "3rem 1rem", border: "2px dashed #cbd5e1", borderRadius: "20px", textAlign: "center", opacity: 0.4 }}>
+                    <p style={{ fontSize: "0.9rem", fontWeight: "600" }}>Your saved trips will appear here.</p>
+                  </div>
+                ) : (
+                  myItineraries.map(trip => (
+                    <Link key={trip.id} href={`/itineraries/${trip.id}`} className="saved-link-wrapper">
+                      <div className="saved-row" style={{ backgroundColor: isDark ? "#262626" : "white", padding: "14px", borderRadius: "20px", display: "flex", alignItems: "center", gap: "15px", border: `1px solid ${isDark ? "#333" : "#eee"}`, position: "relative" }}>
+                        <img src={trip.image} style={{ width: "55px", height: "55px", borderRadius: "12px", objectFit: "cover" }} />
+                        <h4 style={{ fontWeight: "bold", fontSize: "0.95rem", flex: 1, margin: 0 }}>{trip.title}</h4>
+                        <button onClick={(e) => handleRemove(e, trip.id, "trip")} className="btn-remove-text">REMOVE</button>
+                      </div>
+                    </Link>
+                  ))
+                )}
+              </div>
+            </section>
+
+          </div>
         </div>
-      </div>
+      </main>
+
+      <style jsx global>{`
+        @keyframes ping { 75%, 100% { transform: scale(2); opacity: 0; } }
+        .dot-ping { position: absolute; height: 100%; width: 100%; border-radius: 50%; background-color: #3b82f6; opacity: 0.6; animation: ping 1.5s infinite; }
+        .dot-main { position: relative; border-radius: 50%; height: 10px; width: 10px; background-color: #2563eb; display: block; }
+        .dot-container { position: relative; display: flex; height: 10px; width: 10px; }
+        .badge-weekly { display: flex; align-items: center; gap: 10px; background-color: ${isDark ? "rgba(37, 99, 235, 0.1)" : "#eff6ff"}; padding: 8px 18px; border-radius: 30px; border: 1px solid ${isDark ? "#1e40af" : "#3b82f6"}; }
+        
+        .suggested-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .suggested-card:hover .card-image { transform: scale(1.1); }
+        .btn-save:hover { background-color: #16a34a !important; color: white !important; }
+
+        .saved-link-wrapper { text-decoration: none; color: inherit; display: block; }
+        .saved-row { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .saved-link-wrapper:hover .saved-row { 
+          transform: scale(1.02) translateX(10px); 
+          box-shadow: ${isDark ? "0 10px 30px rgba(0,0,0,0.4)" : "0 10px 30px rgba(37, 99, 235, 0.1)"};
+          border-color: #2563eb !important;
+        }
+
+        .btn-remove-text { 
+          background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; 
+          padding: 6px 12px; border-radius: 10px; cursor: pointer; 
+          font-weight: 800; font-size: 0.65rem; letter-spacing: 0.5px; transition: 0.2s; 
+        }
+        .btn-remove-text:hover { background: #ef4444; color: white; border-color: #ef4444; transform: scale(1.05); }
+        .btn-priority:hover { transform: scale(1.3); }
+
+        .empty-state-btn:hover {
+          background-color: #2563eb;
+          color: white !important;
+          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+      `}</style>
     </div>
   );
 }
