@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState, Suspense } from "react"; // Dodan Suspense
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 const API_URL = "https://6942e05d69b12460f313226c.mockapi.io/attractions";
@@ -15,6 +15,15 @@ const categories = [
   "Hidden Gems",
   "Family-Friendly",
 ] as const;
+
+// DODANO: Mapa koja povezuje query parametre s tvojim punim nazivima kategorija
+const categoryMap: Record<string, string> = {
+  top: "All", // Top Attractions vodi na sve ili specifičnu grupu
+  gems: "Hidden Gems",
+  family: "Family-Friendly",
+  culture: "Cultural & Historical",
+  nature: "Nature & Beaches",
+};
 
 const PER_PAGE = 6;
 
@@ -31,14 +40,16 @@ type Attraction = {
   lng: number;
 };
 
-// 1. Sva tvoja postojeća logika ide u ovu "unutrašnju" komponentu
 function ExploreContent() {
   const searchParams = useSearchParams();
   const [attractions, setAttractions] = useState<Attraction[]>([]);
   const [theme, setTheme] = useState("light");
   const [loading, setLoading] = useState(true);
 
-  const category = searchParams.get("category") || "All";
+  // IZMIJENJENO: Provjerava je li parametar skraćenica (iz PopularSections) ili puni naziv
+  const rawCategory = searchParams.get("category") || "All";
+  const category = categoryMap[rawCategory] || rawCategory; 
+  
   const currentPage = Math.max(1, Number(searchParams.get("page")) || 1);
 
   useEffect(() => {
@@ -158,7 +169,7 @@ function ExploreContent() {
           <div className="flex justify-center items-center gap-3 mt-10">
             {currentPage > 1 && (
               <Link
-                href={getHref(category, currentPage - 1)}
+                href={getHref(rawCategory, currentPage - 1)}
                 style={{ backgroundColor: isDark ? "#262626" : "#ffffff" }}
                 className="px-4 py-2 rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50 transition font-medium"
               >
@@ -172,7 +183,7 @@ function ExploreContent() {
 
             {currentPage < totalPages && (
               <Link
-                href={getHref(category, currentPage + 1)}
+                href={getHref(rawCategory, currentPage + 1)}
                 style={{ backgroundColor: isDark ? "#262626" : "#ffffff" }}
                 className="px-4 py-2 rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50 transition font-medium"
               >
@@ -187,7 +198,6 @@ function ExploreContent() {
   );
 }
 
-// 2. Glavni export koji samo omotava sadržaj u Suspense
 export default function ExplorePage() {
   return (
     <Suspense fallback={<div className="text-center py-20">Loading page...</div>}>

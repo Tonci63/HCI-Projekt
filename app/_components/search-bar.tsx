@@ -73,7 +73,7 @@ export function SearchBar() {
 
       {/* DROPDOWN REZULTATI */}
       {results.length > 0 && (
-        <div className={`absolute top-full left-0 w-full mt-3 rounded-[2rem] border overflow-hidden shadow-2xl animate-in fade-in slide-in-from-top-2
+        <div className={`absolute top-full left-0 w-full mt-3 rounded-4xl border overflow-hidden shadow-2xl animate-in fade-in slide-in-from-top-2
           ${isDark ? "bg-[#1e1e1e] border-[#262626]" : "bg-white border-gray-100"}`}
         >
           {results.map((loc: any) => (

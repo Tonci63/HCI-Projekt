@@ -23,7 +23,6 @@ export function Hero() {
   const isDark = theme === "dark";
 
   return (
-    /* Maknuo sam bg-white i stavio bg-transparent da Hero ne izgleda kao kartica */
     <section 
       className="max-w-7xl mx-auto px-0 md:px-6 py-0 md:py-10 bg-transparent transition-colors duration-300"
     >
@@ -50,15 +49,22 @@ export function Hero() {
             <SearchBar />
           </div>
 
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-lg mx-auto md:mx-0">
-            <Link href="/itineraries">
-              <button className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium shadow hover:bg-blue-700 transition cursor-pointer">
+          {/* NOVI UX GUMBI S JASNIJIM EXPLORE LINKOM */}
+          <div className="mt-8 flex flex-col md:flex-row items-center gap-6 max-w-lg mx-auto md:mx-0">
+            {/* PRIMARNI CTA - Dominantan */}
+            <Link href="/itineraries" className="w-full md:w-[65%]">
+              <button className="w-full py-4 bg-blue-600 text-white rounded-xl font-black shadow-[0_10px_20px_-5px_rgba(37,99,235,0.4)] hover:bg-blue-700 hover:-translate-y-1 transition-all duration-300 cursor-pointer uppercase text-[12px] tracking-[0.15em]">
                 Plan My Trip
               </button>
             </Link>
 
-            <Link href="/explore">
-              <button className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium shadow hover:bg-blue-700 transition cursor-pointer">
+            {/* SEKUNDARNI CTA - Sada se jasno vidi da je gumb/link */}
+            <Link href="/explore" className="w-full md:w-auto">
+              <button className={`w-full md:w-auto px-6 py-3 rounded-xl font-bold transition-all duration-300 cursor-pointer text-[11px] uppercase tracking-widest border ${
+                isDark 
+                ? "bg-[#262626] border-[#333] text-gray-300 hover:bg-[#333] hover:text-white" 
+                : "bg-gray-100 border-gray-200 text-gray-600 hover:bg-gray-200 hover:text-gray-900"
+              }`}>
                 Explore Croatia
               </button>
             </Link>
@@ -66,7 +72,6 @@ export function Hero() {
         </div>
 
         {/* IMAGE */}
-        {/* Maknuo sam shadow na slici ako je mobitel da se stopi s pozadinom */}
         <div className="order-1 md:order-2 relative w-full h-72 md:h-[420px] md:rounded-2xl overflow-hidden shadow-none md:shadow-lg">
           <Image
             src="/dubrovnik.jpg"
@@ -76,7 +81,6 @@ export function Hero() {
             priority
           />
 
-          {/* Gradijent koji se stopi s bojom stranice ovisno o temi */}
           <div 
             style={{ 
               background: isDark 

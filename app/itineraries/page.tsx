@@ -43,19 +43,40 @@ export default function ItinerariesPage() {
 
   const isDark = theme === "dark";
 
-  const calculateTotalTime = (items: Attraction[]) => {
+  const getSmartTravelAdvice = (items: Attraction[]) => {
+    if (items.length === 0) return null;
+
     let totalMinutes = 0;
+    const locations = items.map(a => a.name.toLowerCase());
+    
     items.forEach(attr => {
       const timeStr = attr.travelTime?.toLowerCase() || "";
       const num = parseFloat(timeStr);
-      if (isNaN(num)) return;
-      if (timeStr.includes("h")) totalMinutes += num * 60;
-      else if (timeStr.includes("min")) totalMinutes += num;
+      if (!isNaN(num)) {
+        if (timeStr.includes("h")) totalMinutes += num * 60;
+        else if (timeStr.includes("min")) totalMinutes += num;
+      }
     });
+
     const h = Math.floor(totalMinutes / 60);
     const m = totalMinutes % 60;
-    return h > 0 ? `${h}h ${m}min` : `${m}min`;
+    const timeDisplay = h > 0 ? `${h}h ${m}min` : `${m}min`;
+
+    let baseCity = "the central location";
+    if (locations.some(l => l.includes("split") || l.includes("dalmatia") || l.includes("hvar"))) baseCity = "Split";
+    else if (locations.some(l => l.includes("zagreb") || l.includes("plitvice"))) baseCity = "Zagreb";
+    else if (locations.some(l => l.includes("dubrovnik"))) baseCity = "Dubrovnik";
+    else if (locations.some(l => l.includes("istr") || l.includes("pula") || l.includes("rovinj"))) baseCity = "Istria (Pula/Rovinj)";
+
+    return {
+      time: timeDisplay,
+      isLongTrip: totalMinutes > 360,
+      baseCity: baseCity,
+      count: items.length
+    };
   };
+
+  const advice = getSmartTravelAdvice(myAttractions);
 
   const handleSaveTrip = (trip: Trip) => {
     if (myItineraries.find(t => t.id === trip.id)) return;
@@ -123,15 +144,32 @@ export default function ItinerariesPage() {
         </div>
 
         <div style={{ backgroundColor: isDark ? "#1a1a1a" : "#f8fafc", borderRadius: "40px", padding: "3rem", border: `1px solid ${isDark ? "#262626" : "#e2e8f0"}` }}>
-          <h2 style={{ fontSize: "2rem", fontWeight: "900", textAlign: "center", marginBottom: "3.5rem", color: "#2563eb" }}>MY SAVED JOURNEY</h2>
           
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))", gap: "3.5rem" }}>
             
+            {/* LIJEVA STRANA - LOCATIONS */}
             <section>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "3px solid #2563eb", paddingBottom: "10px", marginBottom: "2rem" }}>
-                <h3 style={{ fontWeight: "800", margin: 0 }}>Locations</h3>
-                <span style={{ color: "#2563eb", fontWeight: "900", fontSize: "0.9rem" }}>{calculateTotalTime(myAttractions)}</span>
-              </div>
+              <h3 style={{ borderBottom: "3px solid #2563eb", paddingBottom: "10px", marginBottom: "2rem", fontWeight: "800" }}>Locations</h3>
+              
+              {advice && (
+                <div style={{ 
+                  backgroundColor: "#2563eb", color: "white", borderRadius: "20px", padding: "15px 20px", 
+                  marginBottom: "2rem", boxShadow: "0 8px 20px rgba(37, 99, 235, 0.2)",
+                  display: "flex", flexDirection: "column", gap: "8px"
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <h4 style={{ margin: 0, fontSize: "0.9rem", fontWeight: "900" }}>🗺️ ROUTE INFO</h4>
+                    <span style={{ fontSize: "1rem", fontWeight: "900" }}>{advice.time}</span>
+                  </div>
+                  <p style={{ margin: 0, fontSize: "0.8rem", opacity: 0.9, lineHeight: "1.4" }}>
+                    Stay in <strong>{advice.baseCity}</strong> to visit these {advice.count} spots efficiently.
+                  </p>
+                  <span style={{ fontSize: "0.65rem", fontWeight: "800", textTransform: "uppercase", opacity: 0.8, marginTop: "4px" }}>
+                    {advice.isLongTrip ? "⚠️ Multi-day trip suggested" : "✅ Perfect for 1 day"}
+                  </span>
+                </div>
+              )}
+
               <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
                 {myAttractions.length === 0 ? (
                   <div style={{ padding: "3rem 1rem", border: "2px dashed #cbd5e1", borderRadius: "20px", textAlign: "center", opacity: 0.8 }}>
@@ -143,20 +181,67 @@ export default function ItinerariesPage() {
                     }} className="empty-state-btn">Start Exploring</Link>
                   </div>
                 ) : (
-                  myAttractions.map(attr => (
-                    <Link key={attr.id} href={`/explore/${attr.id}`} className="saved-link-wrapper">
-                      <div className="saved-row" style={{ backgroundColor: isDark ? "#262626" : "white", padding: "14px", borderRadius: "20px", display: "flex", alignItems: "center", gap: "15px", border: attr.isPriority ? "2px solid #eab308" : `1px solid ${isDark ? "#333" : "#eee"}`, position: "relative" }}>
-                        <img src={attr.image} style={{ width: "55px", height: "55px", borderRadius: "12px", objectFit: "cover" }} />
-                        <div style={{ flex: 1 }}><h4 style={{ fontWeight: "bold", fontSize: "0.95rem", margin: 0 }}>{attr.name}</h4><p style={{ fontSize: "0.75rem", opacity: 0.5, margin: 0 }}>{attr.travelTime}</p></div>
-                        <button onClick={(e) => togglePriority(e, attr.id)} className="btn-priority" style={{ background: "none", border: "none", cursor: "pointer", color: attr.isPriority ? "#eab308" : "#ccc", fontSize: "1.4rem" }}>★</button>
-                        <button onClick={(e) => handleRemove(e, attr.id, "attr")} className="btn-remove-text">REMOVE</button>
-                      </div>
-                    </Link>
-                  ))
+                  <>
+                    {myAttractions.map(attr => (
+                      <Link key={attr.id} href={`/explore/${attr.id}`} className="saved-link-wrapper">
+                        <div className="saved-row" style={{ 
+                          backgroundColor: attr.isPriority 
+                            ? (isDark ? "#2d2a1e" : "#fffbeb") 
+                            : (isDark ? "#262626" : "white"), 
+                          padding: "14px", 
+                          borderRadius: "20px", 
+                          display: "flex", 
+                          alignItems: "center", 
+                          gap: "15px", 
+                          border: attr.isPriority 
+                            ? "2px solid #eab308" 
+                            : `1px solid ${isDark ? "#333" : "#eee"}`, 
+                          position: "relative",
+                          boxShadow: attr.isPriority ? "0 4px 15px rgba(234, 179, 8, 0.15)" : "none"
+                        }}>
+                          {/* VISUAL FEEDBACK ZA FAVORITE */}
+                          {attr.isPriority && (
+                            <span style={{ 
+                              position: "absolute", top: "-10px", right: "20px", 
+                              backgroundColor: "#eab308", color: "white", 
+                              fontSize: "0.6rem", fontWeight: "900", padding: "2px 8px", 
+                              borderRadius: "10px", letterSpacing: "0.5px", boxShadow: "0 2px 5px rgba(0,0,0,0.1)"
+                            }}>MUST VISIT</span>
+                          )}
+
+                          <img src={attr.image} style={{ width: "55px", height: "55px", borderRadius: "12px", objectFit: "cover" }} />
+                          <div style={{ flex: 1 }}>
+                            <h4 style={{ fontWeight: "bold", fontSize: "0.95rem", margin: 0 }}>{attr.name}</h4>
+                            <p style={{ fontSize: "0.75rem", opacity: 0.5, margin: 0 }}>{attr.travelTime}</p>
+                          </div>
+                          <button 
+                            onClick={(e) => togglePriority(e, attr.id)} 
+                            className="btn-priority" 
+                            style={{ 
+                              background: "none", border: "none", cursor: "pointer", 
+                              color: attr.isPriority ? "#eab308" : "#ccc", 
+                              fontSize: "1.4rem",
+                              transition: "0.2s",
+                              filter: attr.isPriority ? "drop-shadow(0 0 5px rgba(234, 179, 8, 0.5))" : "none"
+                            }}
+                          >
+                            ★
+                          </button>
+                          <button onClick={(e) => handleRemove(e, attr.id, "attr")} className="btn-remove-text">REMOVE</button>
+                        </div>
+                      </Link>
+                    ))}
+                    <Link href="/explore" style={{ 
+                      textAlign: "center", padding: "12px", borderRadius: "16px", border: `2px dashed ${isDark ? "#444" : "#cbd5e1"}`, 
+                      color: isDark ? "#aaa" : "#64748b", textDecoration: "none", fontSize: "0.85rem", fontWeight: "bold", 
+                      marginTop: "0.5rem", transition: "0.2s" 
+                    }} className="add-more-btn">+ Add More Attractions</Link>
+                  </>
                 )}
               </div>
             </section>
 
+            {/* DESNA STRANA - TRIP PLANS */}
             <section>
               <h3 style={{ borderBottom: "3px solid #16a34a", paddingBottom: "10px", marginBottom: "2rem", fontWeight: "800" }}>Trip Plans</h3>
               <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
@@ -208,12 +293,8 @@ export default function ItinerariesPage() {
         }
         .btn-remove-text:hover { background: #ef4444; color: white; border-color: #ef4444; transform: scale(1.05); }
         .btn-priority:hover { transform: scale(1.3); }
-
-        .empty-state-btn:hover {
-          background-color: #2563eb;
-          color: white !important;
-          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-        }
+        .empty-state-btn:hover { background-color: #2563eb; color: white !important; }
+        .add-more-btn:hover { border-color: #2563eb !important; color: #2563eb !important; }
       `}</style>
     </div>
   );

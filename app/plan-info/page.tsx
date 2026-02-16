@@ -5,6 +5,7 @@ import Link from "next/link";
 
 export default function InfoPage() {
   const [theme, setTheme] = useState("light");
+  const [activeSection, setActiveSection] = useState("tips"); // State za praćenje aktivnog linka
 
   useEffect(() => {
     const syncTheme = () => {
@@ -13,7 +14,30 @@ export default function InfoPage() {
     };
     syncTheme();
     window.addEventListener("storage", syncTheme);
-    return () => window.removeEventListener("storage", syncTheme);
+
+    // LOGIKA ZA PRAĆENJE SKROLA
+    const handleScroll = () => {
+      const sections = ["tips", "weather", "events", "faq"];
+      const scrollPosition = window.scrollY + 200;
+
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const offsetTop = element.offsetTop;
+          const height = element.offsetHeight;
+
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + height) {
+            setActiveSection(section);
+          }
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("storage", syncTheme);
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   const isDark = theme === "dark";
@@ -30,10 +54,30 @@ export default function InfoPage() {
       {/* QUICK NAV */}
       <div className="sticky top-0 z-50 flex justify-center p-4">
         <div className={`${cardBg} backdrop-blur-md bg-opacity-80 border ${borderColor} px-6 py-2 rounded-full shadow-lg flex gap-8 text-[9px] font-black uppercase tracking-[0.2em]`}>
-          <a href="#tips" className="hover:text-blue-600 transition-colors text-blue-600">Tips</a>
-          <a href="#weather" className="hover:text-blue-600 transition-colors">Weather</a>
-          <a href="#events" className="hover:text-blue-600 transition-colors">Events</a>
-          <a href="#faq" className="hover:text-blue-600 transition-colors">FAQ</a>
+          <a 
+            href="#tips" 
+            className={`transition-colors ${activeSection === "tips" ? "text-blue-600" : isDark ? "text-gray-400" : "text-gray-500"} hover:text-blue-600`}
+          >
+            Tips
+          </a>
+          <a 
+            href="#weather" 
+            className={`transition-colors ${activeSection === "weather" ? "text-blue-600" : isDark ? "text-gray-400" : "text-gray-500"} hover:text-blue-600`}
+          >
+            Weather
+          </a>
+          <a 
+            href="#events" 
+            className={`transition-colors ${activeSection === "events" ? "text-blue-600" : isDark ? "text-gray-400" : "text-gray-500"} hover:text-blue-600`}
+          >
+            Events
+          </a>
+          <a 
+            href="#faq" 
+            className={`transition-colors ${activeSection === "faq" ? "text-blue-600" : isDark ? "text-gray-400" : "text-gray-500"} hover:text-blue-600`}
+          >
+            FAQ
+          </a>
         </div>
       </div>
 
@@ -93,7 +137,7 @@ export default function InfoPage() {
           </div>
         </section>
 
-        {/* EVENTS SECTION - VRAĆENO I SREĐENO */}
+        {/* EVENTS SECTION */}
         <section id="events">
           <div className="flex items-center gap-4 mb-10">
             <h2 className={`text-xl font-black ${textColor} uppercase tracking-tight italic`}>Upcoming Events</h2>
@@ -153,7 +197,6 @@ export default function InfoPage() {
           </div>
         </section>
 
-        {/* COMPACT FOOTER CTA */}
         <section className="pt-10 border-t border-gray-100 dark:border-[#262626] text-center">
             <Link href="/itineraries" className={`group inline-flex items-center gap-3 ${textColor} font-black uppercase text-[10px] tracking-[0.2em] hover:text-blue-600 transition-all`}>
               <span>Back to my journey</span>
