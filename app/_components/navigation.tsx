@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { authClient } from "@/lib/auth/auth-client";
 
 const pages = [
   { title: "Home", path: "/" },
@@ -18,7 +19,12 @@ export function Navigation() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
+    const checkSession = async () => {
+      const session = await authClient.getSession();
+      setIsLoggedIn(!!session?.data?.user);
+    };
+
+    checkSession();
   }, [pathname]);
 
   return (
@@ -82,12 +88,15 @@ export function Navigation() {
               href={page.path}
               onClick={() => setOpen(false)}
               className={`block px-4 py-2 rounded-md font-medium ${
-                pathname === page.path ? "bg-blue-600 text-white" : "text-gray-700 dark:text-gray-300"
+                pathname === page.path
+                  ? "bg-blue-600 text-white"
+                  : "text-gray-700 dark:text-gray-300"
               }`}
             >
               {page.title}
             </Link>
           ))}
+
           <Link
             href={isLoggedIn ? "/profile" : "/login"}
             onClick={() => setOpen(false)}

@@ -196,14 +196,6 @@ export default function InfoPage() {
             ))}
           </div>
         </section>
-
-        <section className="pt-10 border-t border-gray-100 dark:border-[#262626] text-center">
-            <Link href="/itineraries" className={`group inline-flex items-center gap-3 ${textColor} font-black uppercase text-[10px] tracking-[0.2em] hover:text-blue-600 transition-all`}>
-              <span>Back to my journey</span>
-              <span className="group-hover:translate-x-2 transition-transform">→</span>
-            </Link>
-        </section>
-
       </div>
     </div>
   );

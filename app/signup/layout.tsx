@@ -1,10 +1,10 @@
-export default function LoginLayout({
+export default function SignUpLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <section className="min-h-screen bg-gray-50">
+    <section className="min-h-screen bg-blue-50">
       {children}
     </section>
   );

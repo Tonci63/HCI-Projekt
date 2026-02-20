@@ -1,139 +1,173 @@
-"use client";
+import cms from "@/cms";
+import Link from "next/link";
 
-import { useState } from "react";
-import ReviewsSection from "./Reviews";
+const PER_PAGE = 6;
 
-const BLOG_POSTS = [
-  {
-    id: 1,
-    title: "5 Hidden Gems in Istria You Must Visit",
-    category: "Hidden Gems",
-    rating: 4.8,
-    date: "2024-05-10",
-    excerpt: "Beyond Rovinj and Pula, Istria hides medieval hilltop towns and secret coves...",
-  },
-  {
-    id: 2,
-    title: "Traditional Croatian Dishes to Try This Summer",
-    category: "Cultural Insights",
-    rating: 4.5,
-    date: "2024-05-12",
-    excerpt: "From Peka to Crni Rižot, explore the rich flavors of the Adriatic coast...",
-  },
-  {
-    id: 3,
-    title: "Solo Traveler's Guide to Dubrovnik",
-    category: "Travel Tips",
-    rating: 4.9,
-    date: "2024-05-15",
-    excerpt: "Is Dubrovnik safe for solo travelers? Here is everything you need to know...",
-  },
-];
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string; page?: string; sort?: string }>;
+}) {
+  const params = await searchParams;
 
-export default function BlogPage() {
-  const [filter, setFilter] = useState("All");
-  const [sortBy, setSortBy] = useState("recent"); // Stanje za sortiranje
+  const category = params?.category;
+  const page = Number(params?.page ?? 1);
+  const sort = params?.sort ?? "recent";
 
-  // Logika koja kombinira filtriranje i sortiranje
-  const filteredAndSortedPosts = BLOG_POSTS
-    .filter((post) => filter === "All" || post.category === filter)
-    .sort((a, b) => {
-      if (sortBy === "highest") return b.rating - a.rating; // Od najveće ocjene
-      if (sortBy === "recent") return new Date(b.date).getTime() - new Date(a.date).getTime(); // Od najnovijeg datuma
-      return 0;
-    });
+  const data = await cms.getEntries({
+    content_type: "blogPost",
+    order: sort === "oldest"
+    ? ["fields.publishedAt"]
+    : ["-fields.publishedAt"],
+  });
+
+  let posts = data.items;
+
+  // filter
+  if (category && category !== "All") {
+    posts = posts.filter(
+      (p: any) => p.fields.category === category
+    );
+  }
+
+  const totalPages = Math.ceil(posts.length / PER_PAGE);
+
+  const paginated = posts.slice(
+    (page - 1) * PER_PAGE,
+    page * PER_PAGE
+  );
+
+  const categories = [
+    "All",
+    "Hidden Gems",
+    "Travel Tips",
+    "Cultural Insights",
+  ];
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* HEADER */}
-      <section className="bg-gray-900 py-20 px-6 text-center">
-        <div className="max-w-3xl mx-auto">
-          <span className="bg-blue-600 text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
-            Latest Updates
-          </span>
-          <h1 className="text-4xl md:text-5xl font-black text-white mt-6 mb-4 uppercase tracking-tighter">
-            Travel Blog
-          </h1>
-          <p className="text-gray-400 text-lg">
-            Local stories and hidden gems across Croatia.
-          </p>
-        </div>
-      </section>
+    <main className="max-w-6xl mx-auto px-6 py-12">
+      {/* Header */}
+      <h1 className="text-4xl font-black mb-2">Travel Blog</h1>
+      <p className="opacity-70 mb-10">
+        Local stories and hidden gems across Croatia.
+      </p>
 
-      <div className="max-w-6xl mx-auto px-6 py-12">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-10">
         
-        {/* FILTER & SORT BAR */}
-        <div className="flex flex-col md:flex-row justify-between items-center pb-8 mb-12 border-b gap-6">
-          
-          {/* Kategorije */}
-          <div className="flex gap-3 overflow-x-auto w-full md:w-auto">
-            {["All", "Hidden Gems", "Cultural Insights", "Travel Tips"].map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setFilter(cat)}
-                className={`px-6 py-2 rounded-full text-xs font-black uppercase transition whitespace-nowrap ${
-                  filter === cat 
-                    ? "bg-blue-600 text-white shadow-lg shadow-blue-100" 
-                    : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+        {/* LEFT — FILTERS */}
+        <div className="flex flex-wrap gap-3">
+          {categories.map((c) => {
+            const active = c === (category ?? "All");
+
+            const params = new URLSearchParams();
+            if (c !== "All") params.set("category", c);
+            if (sort !== "recent") params.set("sort", sort);
+
+            return (
+              <Link
+                key={c}
+                href={`/blog?${params.toString()}`}
+                className={`px-4 py-2 rounded-lg font-medium transition ${
+                  active
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200 hover:bg-gray-300"
                 }`}
               >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          {/* Sortiranje - OVO JE FALILO */}
-          <div className="flex items-center gap-3 w-full md:w-auto justify-end">
-            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Sort by:</span>
-            <select 
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="bg-gray-50 border border-gray-200 text-xs font-bold p-2 px-4 rounded-xl outline-none focus:ring-2 focus:ring-blue-600 cursor-pointer"
-            >
-              <option value="recent">Most Recent</option>
-              <option value="highest">Highest Rated</option>
-            </select>
-          </div>
+                {c}
+              </Link>
+            );
+          })}
         </div>
 
-        {/* LISTA BLOGOVA */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-24">
-          {filteredAndSortedPosts.map((post) => (
-            <article key={post.id} className="group cursor-pointer">
-              <div className="aspect-video w-full mb-6 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100 group-hover:border-blue-200 transition-colors">
-                <span className="text-gray-300 font-bold uppercase text-[10px] tracking-widest italic">Image Preview</span>
-              </div>
-              
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-blue-600 text-[10px] font-black uppercase tracking-widest">
-                  {post.category}
-                </span>
-                <span className="text-blue-600 font-bold text-xs">★ {post.rating}</span>
-              </div>
+        {/* RIGHT — SORT */}
+        <div className="flex gap-2">
+          <Link
+            href={`/blog?${category ? `category=${category}&` : ""}sort=recent`}
+            className={`px-4 py-2 rounded-lg border font-medium ${
+              sort === "recent"
+                ? "bg-blue-600 text-white border-blue-600"
+                : "bg-white hover:bg-gray-100"
+            }`}
+          >
+            Most recent
+          </Link>
 
-              <h2 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
-                {post.title}
-              </h2>
-              
-              <p className="text-gray-500 text-sm line-clamp-2 mb-6">
-                {post.excerpt}
+          <Link
+            href={`/blog?${category ? `category=${category}&` : ""}sort=oldest`}
+            className={`px-4 py-2 rounded-lg border font-medium ${
+              sort === "oldest"
+                ? "bg-blue-600 text-white border-blue-600"
+                : "bg-white hover:bg-gray-100"
+            }`}
+          >
+            Oldest
+          </Link>
+        </div>
+
+      </div>
+
+
+      {/* Posts */}
+      <div className="grid md:grid-cols-3 gap-8">
+        {paginated.map((post: any) => (
+          <Link
+            key={post.sys.id}
+            href={`/blog/${post.fields.slug}`}
+            className="border rounded-xl overflow-hidden hover:shadow-lg transition"
+          >
+            {post.fields.coverImage?.fields?.file?.url && (
+              <img
+                src={`https:${post.fields.coverImage.fields.file.url}`}
+                className="h-48 w-full object-cover"
+                alt={post.fields.title}
+              />
+            )}
+
+            <div className="p-4">
+              <span className="text-xs text-blue-600 font-bold">
+                {post.fields.category}
+              </span>
+
+              <p className="text-xs opacity-50 mt-1">
+                {new Date(post.fields.publishedAt).toLocaleDateString()}
               </p>
 
-              <div className="flex items-center justify-between pt-4 border-t border-gray-50">
-                <span className="text-gray-400 text-[10px] font-bold uppercase">{post.date}</span>
-                <span className="text-gray-900 font-black text-xs uppercase group-hover:text-blue-600 transition-colors">
-                  Read More →
-                </span>
-              </div>
-            </article>
-          ))}
-        </div>
+              <h2 className="text-xl font-bold mt-1">
+                {post.fields.title}
+              </h2>
 
-        {/* REVIEWS SEKCIJA */}
-        <div className="max-w-4xl border-t border-gray-100 pt-16">
-          <ReviewsSection />
-        </div>
+              <p className="opacity-70 text-sm mt-2">
+                {post.fields.excerpt}
+              </p>
+            </div>
+          </Link>
+        ))}
       </div>
-    </div>
+
+      {/* Pagination */}
+      <div className="flex justify-center gap-3 mt-12">
+        {page > 1 && (
+          <Link
+            href={`/blog?page=${page - 1}${
+              category ? `&category=${category}` : ""
+            }`}
+            className="px-4 py-2 border rounded-lg"
+          >
+            ← Prev
+          </Link>
+        )}
+
+        {page < totalPages && (
+          <Link
+            href={`/blog?page=${page + 1}${
+              category ? `&category=${category}` : ""
+            }`}
+            className="px-4 py-2 border rounded-lg"
+          >
+            Next →
+          </Link>
+        )}
+      </div>
+    </main>
   );
 }

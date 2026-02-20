@@ -1,0 +1,1 @@
+ALTER TABLE "saved_trips" ADD COLUMN "trip_id" text NOT NULL;
