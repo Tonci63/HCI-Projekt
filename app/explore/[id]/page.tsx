@@ -209,9 +209,7 @@ export default function AttractionDetail() {
                     {attraction.rating}
                   </span>
                 </div>
-                <span className="ml-2 text-sm opacity-60">
-                  ({attraction.reviews?.toLocaleString()} reviews)
-                </span>
+                {/* MAKNUO SAM REVIEWS ODAVDE KAKO SI TRAŽIO */}
               </div>
             )}
             {renderCost(attraction.cost)}

@@ -27,12 +27,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/favicon.ico?v=1" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=1" />
+      </head>
+      
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeWrapper>
           <div className="flex flex-col min-h-screen">
             <Navigation />
             
-            {/* OVA LINIJA ISPOD JE KLJUČNA DA SE VRATI SADRŽAJ */}
             <main className="grow">{children}</main>
             
             <footer className="py-10 text-center border-t border-gray-200 dark:border-gray-800">

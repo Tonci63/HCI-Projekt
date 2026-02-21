@@ -150,7 +150,8 @@ export default function ItinerariesClient({
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "2rem", marginBottom: "5rem" }}>
+        {/* POPRAVAK 1: Promijenjen minmax za mobitele */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: "2rem", marginBottom: "5rem" }}>
           {suggestedTrips.map(trip => {
             const isSaved = trips.some(t => t.title === trip.title);
             return (
@@ -177,7 +178,8 @@ export default function ItinerariesClient({
         </div>
 
         <div style={{ backgroundColor: isDark ? "#1a1a1a" : "#f8fafc", borderRadius: "40px", padding: "3rem", border: `1px solid ${isDark ? "#262626" : "#e2e8f0"}` }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))", gap: "3.5rem" }}>
+          {/* POPRAVAK 2: Dodana klasa itinerary-grid-fix */}
+          <div className="itinerary-grid-fix" style={{ display: "grid", gap: "3.5rem" }}>
             
             <section>
               <h3 style={{ borderBottom: "3px solid #2563eb", paddingBottom: "10px", marginBottom: "1.5rem", fontWeight: "800" }}>Locations Schedule</h3>
@@ -290,6 +292,18 @@ export default function ItinerariesClient({
       </main>
 
       <style jsx global>{`
+        /* POPRAVAK 3: CSS za grid koji sprječava bježanje u desno */
+        @media (min-width: 850px) {
+          .itinerary-grid-fix {
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)) !important;
+          }
+        }
+        @media (max-width: 849px) {
+          .itinerary-grid-fix {
+            grid-template-columns: 1fr !important;
+          }
+        }
+
         @keyframes ping { 75%, 100% { transform: scale(2); opacity: 0; } }
         .dot-ping { position: absolute; height: 100%; width: 100%; border-radius: 50%; background-color: #3b82f6; opacity: 0.6; animation: ping 1.5s infinite; }
         .dot-main { position: relative; border-radius: 50%; height: 10px; width: 10px; background-color: #2563eb; display: block; }

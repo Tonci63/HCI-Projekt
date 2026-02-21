@@ -158,7 +158,7 @@ function ExploreContent() {
                   </div>
                 )}
 
-                {/* --- POPRAVLJEN DIO ZA RATING --- */}
+                {/* --- RATING OSTAJE --- */}
                 {attr.rating && (
                   <div className={`absolute top-4 right-4 px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm transition-colors ${
                     isDark ? "bg-black/70 text-white" : "bg-white/90 text-black border border-gray-200"
@@ -179,11 +179,7 @@ function ExploreContent() {
                     View Details
                     <span className="ml-1 transition-transform duration-300 group-hover:translate-x-1">→</span>
                   </span>
-                  {attr.reviews && (
-                    <span className="text-[11px] opacity-50 font-medium">
-                      {attr.reviews} reviews
-                    </span>
-                  )}
+                  {/* REVIEWS SU MAKNUTI ODAVDE */}
                 </div>
               </div>
             </Link>

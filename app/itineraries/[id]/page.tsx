@@ -48,7 +48,6 @@ export default function ItineraryDetailsPage() {
   const extra = getExtraInfo(id);
 
   return (
-    /* KLJUČNA PROMJENA: Koristimo template literal za pozadinu i tekst */
     <div className={`min-h-screen font-sans transition-colors duration-300 ${isDark ? 'bg-[#0a0a0a] text-white' : 'bg-white text-black'}`}>
       
       {/* Hero Section */}
@@ -56,8 +55,15 @@ export default function ItineraryDetailsPage() {
         <img src={trip.image} alt={trip.title} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent flex items-end">
           <div className="max-w-6xl mx-auto w-full px-6 pb-12">
-            <button onClick={() => router.back()} className="mb-6 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full text-sm text-white border border-white/20 hover:bg-white/20 transition">
-              ← Back
+            <button 
+              onClick={() => router.back()} 
+              className={`mb-6 flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border backdrop-blur-xl shadow-lg
+                ${isDark 
+                  ? "bg-black/40 text-white border-white/30 hover:bg-black/60 hover:border-white/50" 
+                  : "bg-white/20 text-white border-white/40 hover:bg-white/40 hover:border-white/60"
+                }`}
+            >
+              <span className="text-lg">←</span> Back
             </button>
             <h1 className="text-5xl md:text-7xl font-black text-white uppercase leading-none">{trip.title}</h1>
           </div>
@@ -99,6 +105,14 @@ export default function ItineraryDetailsPage() {
 
                 <div className="flex-1 pb-10">
                   <h3 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>{plan.day}</h3>
+                  
+                  {/* DODAN INFO DIO OVDJE */}
+                  {plan.info && (
+                    <p className={`mb-4 text-sm italic opacity-80 ${isDark ? 'text-blue-300' : 'text-blue-700'}`}>
+                      {plan.info}
+                    </p>
+                  )}
+
                   <div className="grid gap-3">
                     {plan.activities?.map((act: string, i: number) => (
                       <div key={i} className={`flex items-center gap-4 p-4 rounded-2xl border transition-all ${isDark ? 'bg-[#111] border-gray-800 text-gray-300' : 'bg-white border-gray-100 text-gray-700'}`}>

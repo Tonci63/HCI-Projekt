@@ -2,7 +2,7 @@
 
 import { authClient } from "@/lib/auth/auth-client";
 import { useTheme } from "../_components/ThemeWrapper";
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Trash2, Plus, Type } from "lucide-react";
 
@@ -14,8 +14,6 @@ interface ProfileClientProps {
 
 export default function ProfileClient({ user }: ProfileClientProps) {
   const { theme, toggleTheme } = useTheme();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [tempImage, setTempImage] = useState<string | null>(null);
   
   const [favorites, setFavorites] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -80,34 +78,23 @@ export default function ProfileClient({ user }: ProfileClientProps) {
     <div style={{ backgroundColor: pageBg, minHeight: "100vh", color: textColor, transition: "0.3s ease", padding: "4rem 1.5rem" }}>
       <div style={{ maxWidth: "800px", margin: "0 auto" }}>
         
-        {/* HEADER */}
+        {/* HEADER - BEZ MOGUĆNOSTI PROMJENE SLIKE */}
         <section style={{ textAlign: "center", marginBottom: "3rem" }}>
           <div 
-            className="profile-avatar"
-            onClick={() => fileInputRef.current?.click()}
             style={{
               width: "130px", height: "130px", backgroundColor: "#2563eb", borderRadius: "50%",
               margin: "0 auto 1.5rem", display: "flex", alignItems: "center", justifyContent: "center",
-              color: "white", fontSize: "3rem", fontWeight: "bold", cursor: "pointer",
+              color: "white", fontSize: "3rem", fontWeight: "bold",
               position: "relative", overflow: "hidden", border: `4px solid ${cardBg}`,
-              boxShadow: "0 10px 30px rgba(37, 99, 235, 0.25)", transition: "0.3s ease"
+              boxShadow: "0 10px 30px rgba(37, 99, 235, 0.25)"
             }}
           >
-            {tempImage || user?.image ? (
-              <img src={tempImage || user.image} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="Profile" />
+            {user?.image ? (
+              <img src={user.image} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="Profile" />
             ) : (
               user?.name?.charAt(0).toUpperCase() || "U"
             )}
-            <div className="edit-overlay">CHANGE</div>
           </div>
-          <input type="file" ref={fileInputRef} hidden onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) {
-              const reader = new FileReader();
-              reader.onloadend = () => setTempImage(reader.result as string);
-              reader.readAsDataURL(file);
-            }
-          }} />
           <h1 style={{ fontSize: "2.5rem", fontWeight: "900", margin: 0, letterSpacing: "-1px" }}>{user?.name}</h1>
           <p style={{ color: subTextColor, fontWeight: "500" }}>{user?.email}</p>
         </section>
@@ -205,7 +192,7 @@ export default function ProfileClient({ user }: ProfileClientProps) {
             </button>
           </div>
 
-          {/* Accessibility (Large Font) - NOVO */}
+          {/* Accessibility (Large Font) */}
           <div style={{ 
             width: "100%", maxWidth: "400px", padding: "1rem 1.5rem", 
             backgroundColor: cardBg, border: `1px solid ${borderColor}`, 
@@ -246,13 +233,6 @@ export default function ProfileClient({ user }: ProfileClientProps) {
       </div>
 
       <style jsx>{`
-        .profile-avatar:hover { transform: scale(1.05); }
-        .edit-overlay { 
-          position: absolute; bottom: 0; width: 100%; background: rgba(37, 99, 235, 0.8); 
-          color: white; font-size: 0.65rem; padding: 8px 0; opacity: 0; transition: 0.3s; 
-          font-weight: 900; text-align: center;
-        }
-        .profile-avatar:hover .edit-overlay { opacity: 1; }
         .fav-card:hover { transform: translateY(-5px); border-color: #2563eb !important; }
 
         .plus-icon-bg {

@@ -2,7 +2,8 @@ import cms from "@/cms";
 import { notFound } from "next/navigation";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import Link from "next/link";
-import { ArrowLeft, Calendar, User, Share2 } from "lucide-react";
+// Maknut Share2 import
+import { ArrowLeft, Calendar, User } from "lucide-react"; 
 import { getComments } from "@/app/actions/blog-comments";
 import { getOptionalUser } from "@/app/actions/itinerary";
 import BlogComments from "../_components/blog-comments";
@@ -41,15 +42,14 @@ export default async function BlogDetailsPage({
   const fields: any = post.fields;
 
   return (
-    // DODANO: bg-background i !bg-none da eliminiramo bilo kakav globalni overlay
     <main className="min-h-screen bg-background bg-none! text-foreground pb-32 transition-colors duration-500">
       
-      {/* 1. PROGRESS BAR - Maknuta siva podloga skroz */}
+      {/* 1. PROGRESS BAR */}
       <div className="fixed top-0 left-0 w-full h-1 z-50 pointer-events-none">
         <div className="h-full bg-blue-600 dark:bg-blue-500 w-0 transition-all duration-150" id="progress-bar"></div>
       </div>
 
-      {/* 2. TOP NAVIGATION - Ovdje je bio problem. Sad je !bg-transparent bez ikakvih wrappera */}
+      {/* 2. TOP NAVIGATION - Maknut Share button */}
       <nav className="max-w-4xl mx-auto px-6 pt-16 flex justify-between items-center bg-transparent! border-none">
         <Link
           href="/blog"
@@ -59,9 +59,7 @@ export default async function BlogDetailsPage({
           Back to Blog
         </Link>
         
-        <button className="text-foreground/40 hover:text-foreground transition-all p-2 bg-transparent!">
-          <Share2 className="h-4 w-4" />
-        </button>
+        {/* Ovdje je bila Share2 ikona - sada je prazno da navigacija ostane čista */}
       </nav>
 
       {/* 3. HERO HEADER */}
@@ -85,7 +83,7 @@ export default async function BlogDetailsPage({
         </div>
       </header>
 
-      {/* 4. HERO IMAGE - Smanjena i bez sivih bordera */}
+      {/* 4. HERO IMAGE */}
       <section className="max-w-4xl mx-auto px-6 mb-20">
         {fields.coverImage?.fields?.file?.url && (
           <div className="relative aspect-16/8 md:aspect-21/9 w-full overflow-hidden rounded-4xl border border-foreground/5 shadow-2xl dark:shadow-none">

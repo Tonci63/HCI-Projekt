@@ -39,7 +39,7 @@ export function Hero() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-10 items-center">
           
           {/* TEXT */}
-          <div className="order-2 md:order-1 px-4 md:px-0 text-center md:text-left -mt-16 md:mt-0 relative z-10">
+          <div className="order-2 md:order-1 px-4 md:px-0 text-center md:text-left -mt-20 md:mt-0 relative z-30">
             <h1
               style={{ color: isDark ? "#ffffff" : "#000000" }}
               className="text-3xl md:text-5xl font-bold leading-tight"

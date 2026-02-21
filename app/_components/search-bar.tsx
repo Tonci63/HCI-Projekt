@@ -14,12 +14,10 @@ export function SearchBar() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // 1. Tema
     const checkTheme = () => setIsDark(localStorage.getItem("theme") === "dark");
     checkTheme();
     window.addEventListener("storage", checkTheme);
 
-    // 2. Povuci podatke s tvog API-ja
     const fetchData = async () => {
       try {
         const response = await fetch(API_URL);
@@ -51,8 +49,8 @@ export function SearchBar() {
   };
 
   return (
-    <div className="relative w-full z-50">
-      {/* INPUT POLJE */}
+    <div className="relative w-full">
+      {/* INPUT POLJE - OSTALO ISTO */}
       <div className={`flex items-center gap-3 border-2 transition-all duration-300 rounded-2xl px-5 py-3.5
         ${isDark 
           ? "bg-[#1e1e1e] border-[#262626] focus-within:border-blue-600" 
@@ -71,10 +69,11 @@ export function SearchBar() {
         />
       </div>
 
-      {/* DROPDOWN REZULTATI */}
+      {/* DROPDOWN REZULTATI - POPRAVLJENO DA NIJE PROZIRNO I DA JE IZNAD SVEGA */}
       {results.length > 0 && (
-        <div className={`absolute top-full left-0 w-full mt-3 rounded-4xl border overflow-hidden shadow-2xl animate-in fade-in slide-in-from-top-2
+        <div className={`absolute left-0 right-0 top-full mt-2 rounded-3xl border overflow-hidden shadow-2xl z-9999
           ${isDark ? "bg-[#1e1e1e] border-[#262626]" : "bg-white border-gray-100"}`}
+          style={{ backgroundColor: isDark ? "#1e1e1e" : "#ffffff" }}
         >
           {results.map((loc: any) => (
             <Link 
@@ -87,7 +86,6 @@ export function SearchBar() {
                 setResults([]);
               }}
             >
-              {/* Ovdje pretpostavljam da API ima 'image' i 'name' */}
               <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 relative shrink-0">
                 <img src={loc.image} alt={loc.name} className="object-cover w-full h-full" />
               </div>
