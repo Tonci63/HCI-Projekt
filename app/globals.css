@@ -33,3 +33,24 @@ body {
   background-color: #111111;
   border-color: #262626;
 }
+
+/* --- LARGE FONT MODE (Accessibility) --- */
+
+/* Povećava osnovnu bazu (rem) za cijelu aplikaciju */
+html.large-text {
+  font-size: 1.25rem; /* Povećanje od 25% */
+}
+
+/* Dodatno poliranje za bolju čitljivost */
+html.large-text body {
+  line-height: 1.7;
+}
+
+html.large-text h1 {
+  font-size: 3.5rem !important;
+  letter-spacing: -0.02em;
+}
+
+html.large-text p {
+  font-weight: 450; /* Malo deblji tekst za lakše čitanje */
+}

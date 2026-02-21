@@ -69,7 +69,7 @@ export function Hero() {
               {/* PLAN MY TRIP (AUTH GATED) */}
               <button
                 onClick={handlePlanClick}
-                className="w-full md:w-[65%] py-4 bg-blue-600 text-white rounded-xl font-black shadow-[0_10px_20px_-5px_rgba(37,99,235,0.4)] hover:bg-blue-700 hover:-translate-y-1 transition-all duration-300 cursor-pointer uppercase text-[12px] tracking-[0.15em]"
+                className="w-full md:w-[65%] py-4 bg-blue-600 text-white rounded-xl font-black shadow-[0_10px_20px_-5px_rgba(37,99,235,0.4)] hover:bg-blue-700 hover:-translate-y-1 active:scale-95 transition-all duration-300 cursor-pointer uppercase text-[12px] tracking-[0.15em]"
               >
                 Plan My Trip
               </button>
@@ -81,7 +81,7 @@ export function Hero() {
                     isDark
                       ? "bg-[#262626] border-[#333] text-gray-300 hover:bg-[#333] hover:text-white"
                       : "bg-gray-100 border-gray-200 text-gray-600 hover:bg-gray-200 hover:text-gray-900"
-                  }`}
+                  } hover:-translate-y-1`}
                 >
                   Explore Croatia
                 </button>
@@ -90,24 +90,28 @@ export function Hero() {
             </div>
           </div>
 
-          {/* IMAGE */}
-          <div className="order-1 md:order-2 relative w-full h-72 md:h-[420px] md:rounded-2xl overflow-hidden shadow-none md:shadow-lg">
+          {/* IMAGE S ZOOM EFEKTOM */}
+          <div className="order-1 md:order-2 relative w-full h-72 md:h-[420px] md:rounded-3xl overflow-hidden shadow-none md:shadow-2xl group">
             <Image
               src="/dubrovnik.jpg"
               alt="Dubrovnik old town"
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-2000 ease-out group-hover:scale-110"
               priority
             />
 
+            {/* Overlay gradijent za ljepši prijelaz na mobitelu */}
             <div
               style={{
                 background: isDark
-                  ? "linear-gradient(to top, #1a1a1a 10%, transparent)"
-                  : "linear-gradient(to top, #ffffff 10%, transparent)",
+                  ? "linear-gradient(to top, #1a1a1a 15%, transparent)"
+                  : "linear-gradient(to top, #ffffff 15%, transparent)",
               }}
-              className="absolute bottom-0 left-0 right-0 h-[60%] md:hidden"
+              className="absolute bottom-0 left-0 right-0 h-[60%] md:hidden z-20"
             />
+            
+            {/* Blagi unutarnji shadow za "dubinu" slike */}
+            <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.1)] pointer-events-none" />
           </div>
         </div>
       </section>

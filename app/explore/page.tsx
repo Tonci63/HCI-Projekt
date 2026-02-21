@@ -4,11 +4,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { Star } from "lucide-react"; 
 
 const API_URL = "https://6942e05d69b12460f313226c.mockapi.io/attractions";
 
 const categories = [
   "All",
+  "Top Attractions", 
   "Cultural & Historical",
   "Nature & Beaches",
   "Local Cuisine",
@@ -16,9 +18,8 @@ const categories = [
   "Family-Friendly",
 ] as const;
 
-// DODANO: Mapa koja povezuje query parametre s tvojim punim nazivima kategorija
 const categoryMap: Record<string, string> = {
-  top: "All", // Top Attractions vodi na sve ili specifičnu grupu
+  top: "Top Attractions", 
   gems: "Hidden Gems",
   family: "Family-Friendly",
   culture: "Cultural & Historical",
@@ -38,6 +39,8 @@ type Attraction = {
   accessibility: string;
   lat: number;
   lng: number;
+  rating?: number; 
+  reviews?: number; 
 };
 
 function ExploreContent() {
@@ -46,10 +49,9 @@ function ExploreContent() {
   const [theme, setTheme] = useState("light");
   const [loading, setLoading] = useState(true);
 
-  // IZMIJENJENO: Provjerava je li parametar skraćenica (iz PopularSections) ili puni naziv
   const rawCategory = searchParams.get("category") || "All";
-  const category = categoryMap[rawCategory] || rawCategory; 
-  
+  const category = categoryMap[rawCategory] || rawCategory;
+
   const currentPage = Math.max(1, Number(searchParams.get("page")) || 1);
 
   useEffect(() => {
@@ -83,10 +85,11 @@ function ExploreContent() {
 
   const isDark = theme === "dark";
 
-  const filtered =
-    category === "All"
-      ? attractions
-      : attractions.filter((a) => a.category === category);
+  const filtered = attractions.filter((a) => {
+    if (category === "All") return true;
+    if (category === "Top Attractions") return (a.rating || 0) >= 4.8; 
+    return a.category === category;
+  });
 
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
   const paginated = filtered.slice(
@@ -103,14 +106,14 @@ function ExploreContent() {
   };
 
   return (
-    <div style={{ 
-      backgroundColor: isDark ? "#1a1a1a" : "#ffffff", 
+    <div style={{
+      backgroundColor: isDark ? "#1a1a1a" : "#ffffff",
       color: isDark ? "#ffffff" : "#000000",
       minHeight: "100vh",
       transition: "background-color 0.3s ease"
     }}>
       <div className="container mx-auto pt-12 pb-16 px-6 max-w-7xl">
-        
+
         {/* Filter Bar */}
         <div className="flex flex-wrap justify-center gap-3 mb-12">
           {categories.map((cat) => (
@@ -134,7 +137,7 @@ function ExploreContent() {
             <Link
               key={attr.id}
               href={`/explore/${attr.id}`}
-              style={{ 
+              style={{
                 backgroundColor: isDark ? "#262626" : "#ffffff",
                 borderColor: isDark ? "#333" : "#e5e7eb"
               }}
@@ -148,17 +151,40 @@ function ExploreContent() {
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                   unoptimized
                 />
+
+                {(attr.rating || 0) >= 4.8 && (
+                  <div className="absolute top-4 left-4 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md shadow-lg z-10">
+                    Must Visit
+                  </div>
+                )}
+
+                {/* --- POPRAVLJEN DIO ZA RATING --- */}
+                {attr.rating && (
+                  <div className={`absolute top-4 right-4 px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm transition-colors ${
+                    isDark ? "bg-black/70 text-white" : "bg-white/90 text-black border border-gray-200"
+                  }`}>
+                    <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                    <span className="text-xs font-bold">{attr.rating}</span>
+                  </div>
+                )}
               </div>
               <div className="p-6">
                 <h2 className={`text-2xl font-bold mb-2 group-hover:text-blue-600 transition-colors duration-300 ${isDark ? "text-white" : "text-gray-900"}`}>
                   {attr.name}
                 </h2>
                 <p className={`${isDark ? "text-gray-400" : "text-gray-600"} line-clamp-3`}>{attr.shortDesc}</p>
-                
-                <span className="inline-flex items-center mt-4 text-blue-600 font-medium group-hover:underline">
-                  View Details 
-                  <span className="ml-1 transition-transform duration-300 group-hover:translate-x-1">→</span>
-                </span>
+
+                <div className="flex justify-between items-center mt-4">
+                  <span className="text-blue-600 font-medium group-hover:underline inline-flex items-center">
+                    View Details
+                    <span className="ml-1 transition-transform duration-300 group-hover:translate-x-1">→</span>
+                  </span>
+                  {attr.reviews && (
+                    <span className="text-[11px] opacity-50 font-medium">
+                      {attr.reviews} reviews
+                    </span>
+                  )}
+                </div>
               </div>
             </Link>
           ))}
@@ -193,7 +219,6 @@ function ExploreContent() {
           </div>
         )}
       </div>
-      
     </div>
   );
 }

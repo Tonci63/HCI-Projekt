@@ -15,9 +15,6 @@ import { and, eq } from "drizzle-orm";
    GET SESSION
 ========================= */
 
-/* =========================
-   SAFE SESSION (can be null)
-========================= */
 export async function getOptionalUser() {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -26,9 +23,6 @@ export async function getOptionalUser() {
   return session?.user ?? null;
 }
 
-/* =========================
-   REQUIRED SESSION
-========================= */
 export async function getRequiredUser() {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -135,7 +129,7 @@ export async function saveRecommendedTrip(trip: {
 
   await db.insert(savedTrips).values({
     id: crypto.randomUUID(),
-    tripId: trip.id, // now exists in schema
+    tripId: trip.id, 
     title: trip.title,
     image: trip.image,
     userId: user.id,

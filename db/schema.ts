@@ -37,9 +37,9 @@ export const itineraryAttractions = pgTable("itinerary_attractions", {
 ========================= */
 
 export const savedTrips = pgTable("saved_trips", {
-  id: text("id").primaryKey(), // internal UUID
+  id: text("id").primaryKey(), 
 
-  tripId: text("trip_id").notNull(), // ← ADD THIS LINE
+  tripId: text("trip_id").notNull(), 
 
   title: text("title").notNull(),
   image: text("image").notNull(),
@@ -59,7 +59,7 @@ export const savedTrips = pgTable("saved_trips", {
 export const blogComments = pgTable("blog_comments", {
   id: text("id").primaryKey(),
 
-  blogSlug: text("blog_slug").notNull(), // connects to CMS post
+  blogSlug: text("blog_slug").notNull(), 
 
   userId: text("user_id").notNull(),
 

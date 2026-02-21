@@ -51,8 +51,8 @@ export default function InfoPage() {
   return (
     <div className={`min-h-screen ${bgColor} pb-20 transition-colors duration-300`}>
       
-      {/* QUICK NAV */}
-      <div className="sticky top-0 z-50 flex justify-center p-4">
+      {/* QUICK NAV - SAMO OVDJE PROMIJENJENO top-16 i z-40 */}
+      <div className="sticky top-16 z-40 flex justify-center p-4">
         <div className={`${cardBg} backdrop-blur-md bg-opacity-80 border ${borderColor} px-6 py-2 rounded-full shadow-lg flex gap-8 text-[9px] font-black uppercase tracking-[0.2em]`}>
           <a 
             href="#tips" 
@@ -196,6 +196,14 @@ export default function InfoPage() {
             ))}
           </div>
         </section>
+
+        <section className="pt-10 border-t border-gray-100 dark:border-[#262626] text-center">
+            <Link href="/itineraries" className={`group inline-flex items-center gap-3 ${textColor} font-black uppercase text-[10px] tracking-[0.2em] hover:text-blue-600 transition-all`}>
+              <span>Back to my journey</span>
+              <span className="group-hover:translate-x-2 transition-transform">→</span>
+            </Link>
+        </section>
+
       </div>
     </div>
   );

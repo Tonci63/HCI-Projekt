@@ -54,7 +54,7 @@ export default function ItineraryDetailsPage() {
       {/* Hero Section */}
       <div className="relative h-[50vh] w-full overflow-hidden">
         <img src={trip.image} alt={trip.title} className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end">
+        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent flex items-end">
           <div className="max-w-6xl mx-auto w-full px-6 pb-12">
             <button onClick={() => router.back()} className="mb-6 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full text-sm text-white border border-white/20 hover:bg-white/20 transition">
               ← Back
