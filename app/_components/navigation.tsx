@@ -42,7 +42,7 @@ export function Navigation() {
         {/* LOGO I TEKST - POVEĆANA SAMO IKONA */}
         <Link href="/" className="flex items-center gap-2 text-2xl font-bold tracking-tight">
           <img 
-            src="/ikonica2.png" 
+            src="/ikonica3.png" 
             alt="ViaCroatia Logo" 
             className="w-10 h-10 object-contain" /* Povećano s 8 na 10 */
           />

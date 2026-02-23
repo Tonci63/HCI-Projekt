@@ -33,7 +33,6 @@ export default function AttractionDetail() {
   const [theme, setTheme] = useState("light");
   const [loading, setLoading] = useState(true);
   const [added, setAdded] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
 
   const { showModal, setShowModal, requireAuth } = useAuthGate();
 
@@ -44,9 +43,6 @@ export default function AttractionDetail() {
         if (res.ok) {
           const data = await res.json();
           setAttraction(data);
-
-          const savedFavs = JSON.parse(localStorage.getItem("favorites") || "[]");
-          setIsFavorite(savedFavs.includes(Number(params.id)));
 
           try {
             const res = await fetch(`/api/check-attraction-saved?id=${data.id}`);
@@ -76,23 +72,6 @@ export default function AttractionDetail() {
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
   }, [params.id]);
-
-  const toggleFavorite = () => {
-    const favs = JSON.parse(localStorage.getItem("favorites") || "[]") as number[];
-    const id = Number(params.id);
-    let updated;
-    
-    if (favs.includes(id)) {
-      updated = favs.filter(f => f !== id);
-      setIsFavorite(false);
-    } else {
-      updated = [...favs, id];
-      setIsFavorite(true);
-    }
-    
-    localStorage.setItem("favorites", JSON.stringify(updated));
-    window.dispatchEvent(new Event("storage"));
-  };
 
   const renderCost = (cost: number = 1) => {
     return (
@@ -171,33 +150,10 @@ export default function AttractionDetail() {
             Back to Explore
           </Link>
 
-          {/* NASLOV + FAVORITE GUMB S LABELOM */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
               {attraction.name}
             </h1>
-            
-            <div className="flex items-center gap-3 self-end md:self-auto">
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 text-right leading-none">
-                {isFavorite ? "Saved to\nfavorites" : "Add to\nfavorites"}
-              </span>
-              <button 
-                onClick={toggleFavorite}
-                className="group relative p-3 rounded-full transition-all duration-300 active:scale-90"
-              >
-                <div className={`absolute inset-0 rounded-full transition-all duration-500 blur-xl opacity-0 group-hover:opacity-40 ${
-                  isFavorite ? "bg-yellow-400" : "bg-blue-400"
-                }`} />
-                
-                <Star 
-                  className={`h-9 w-9 relative z-10 transition-all duration-500 ease-out 
-                    ${isFavorite 
-                      ? "fill-yellow-400 text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]" 
-                      : "text-gray-400 group-hover:text-yellow-400/80 group-hover:rotate-12 group-hover:scale-125"
-                    }`} 
-                />
-              </button>
-            </div>
           </div>
 
           <div className="flex items-center flex-wrap gap-y-4 mb-8">
@@ -209,7 +165,6 @@ export default function AttractionDetail() {
                     {attraction.rating}
                   </span>
                 </div>
-                {/* MAKNUO SAM REVIEWS ODAVDE KAKO SI TRAŽIO */}
               </div>
             )}
             {renderCost(attraction.cost)}

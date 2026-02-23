@@ -59,10 +59,10 @@ export default function ItineraryDetailsPage() {
               onClick={() => router.back()} 
               className={`mb-6 flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border backdrop-blur-xl shadow-lg
                 ${isDark 
-                  ? "bg-black/40 text-white border-white/30 hover:bg-black/60 hover:border-white/50" 
-                  : "bg-white/20 text-white border-white/40 hover:bg-white/40 hover:border-white/60"
+                ? "bg-black/40 text-white border-white/30 hover:bg-black/60 hover:border-white/50" 
+                : "bg-white text-gray-900 border-gray-300 hover:bg-gray-100 hover:border-gray-400 hover:shadow-xl shadow-md" 
                 }`}
-            >
+              >
               <span className="text-lg">←</span> Back
             </button>
             <h1 className="text-5xl md:text-7xl font-black text-white uppercase leading-none">{trip.title}</h1>

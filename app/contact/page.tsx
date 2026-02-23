@@ -21,7 +21,7 @@ export default function ContactPage() {
           <div className="bg-purple-600 p-3 rounded-xl text-white"><MapPin /></div>
           <div>
             <p className="text-sm opacity-50 font-bold uppercase">Office</p>
-            <p className="text-xl font-medium">Zagreb, Croatia</p>
+            <p className="text-xl font-medium">Split, Croatia</p>
           </div>
         </div>
       </div>

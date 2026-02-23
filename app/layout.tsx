@@ -18,7 +18,17 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "ViaCroatia",
   description: "Your Croatia Travel Guide",
+  icons: {
+    icon: [
+      { url: "/favicon.ico?v=1" },
+      { url: "/icon.png?v=1", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png?v=1" },
+    ],
+  },
 };
+
 
 export default function RootLayout({
   children,
@@ -27,10 +37,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <link rel="icon" href="/favicon.ico?v=1" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=1" />
-      </head>
       
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeWrapper>
