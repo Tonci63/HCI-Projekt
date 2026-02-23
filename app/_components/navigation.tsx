@@ -79,7 +79,7 @@ export function Navigation() {
             <Link href="/profile" className="transition-transform hover:scale-110 active:scale-95">
               <div 
                 style={{
-                  width: "46px", /* Povećano s 42px na 46px */
+                  width: "46px",
                   height: "46px",
                   backgroundColor: "#2563eb",
                   borderRadius: "50%",
@@ -92,13 +92,13 @@ export function Navigation() {
                   overflow: "hidden",
                   border: `2.5px solid ${isDark ? "#333" : "#e5e7eb"}`,
                   boxShadow: "0 4px 12px rgba(0,0,0,0.15)"
-                }}
-              >
-                {user.image ? (
-                  <img src={user.image} alt="Profile" className="w-full h-full object-cover" />
-                ) : (
-                  user.email?.charAt(0).toUpperCase()
-                )}
+                      }}
+                      >
+                      {user.image ? (
+                      <img src={user.image} alt="Profile" className="w-full h-full object-cover" />
+                                    ) : (
+                              (user.name?.charAt(0) || user.email?.charAt(0) || "U").toUpperCase()
+                                 )}
               </div>
             </Link>
           ) : (

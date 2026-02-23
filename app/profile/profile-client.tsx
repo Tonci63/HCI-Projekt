@@ -14,7 +14,6 @@ export default function ProfileClient({ user }: ProfileClientProps) {
   
   // State za Large Font
   const [largeFont, setLargeFont] = useState(false);
-
   const isDark = theme === "dark";
   const textColor = isDark ? "#ffffff" : "#1e293b";
   const subTextColor = isDark ? "#a1a1aa" : "#64748b";
