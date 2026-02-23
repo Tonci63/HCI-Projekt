@@ -151,7 +151,6 @@ export default function ItinerariesClient({
           </div>
         </div>
 
-        {/* POPRAVAK 1: Promijenjen minmax za mobitele */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: "2rem", marginBottom: "5rem" }}>
           {suggestedTrips.map(trip => {
             const isSaved = trips.some(t => t.title === trip.title);
@@ -179,7 +178,6 @@ export default function ItinerariesClient({
         </div>
 
         <div style={{ backgroundColor: isDark ? "#1a1a1a" : "#f8fafc", borderRadius: "40px", padding: "3rem", border: `1px solid ${isDark ? "#262626" : "#e2e8f0"}` }}>
-          {/* POPRAVAK 2: Dodana klasa itinerary-grid-fix */}
           <div className="itinerary-grid-fix" style={{ display: "grid", gap: "3.5rem" }}>
             
             <section>
@@ -293,7 +291,6 @@ export default function ItinerariesClient({
       </main>
 
       <style jsx global>{`
-        /* POPRAVAK 3: CSS za grid koji sprječava bježanje u desno */
         @media (min-width: 850px) {
           .itinerary-grid-fix {
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)) !important;
@@ -343,24 +340,66 @@ export default function ItinerariesClient({
 
     {/* LOCKED MODAL */}
     {locked && (
-      <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/40 backdrop-blur-sm">
-        <div className="bg-white dark:bg-[#1a1a1a] p-8 rounded-2xl shadow-xl text-center max-w-md w-[90%]">
-          <h2 className="text-xl font-bold mb-4">Login Required</h2>
-          <p className="mb-6 opacity-70">
-            You must log in to access your itineraries.
+      <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/60 backdrop-blur-sm">
+        <div 
+          className="p-8 rounded-3xl shadow-2xl text-center max-w-md w-[90%] border transition-all duration-300"
+          style={{ 
+            backgroundColor: isDark ? "#1e1e1e" : "#ffffff", 
+            borderColor: isDark ? "#333" : "#f1f5f9",
+            color: isDark ? "#ffffff" : "#1e293b"
+          }}
+        >
+          <div 
+            className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
+            style={{ backgroundColor: isDark ? "rgba(37, 99, 235, 0.2)" : "#eff6ff" }}
+          >
+            <span style={{ fontSize: "2rem" }}>🔒</span>
+          </div>
+
+          <h2 className="text-2xl font-black mb-4 uppercase tracking-tight">Login Required</h2>
+          <p 
+            className="mb-8 italic"
+            style={{ color: isDark ? "#a1a1aa" : "#64748b" }}
+          >
+            You must log in to access your itineraries and plan your Croatian adventure.
           </p>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-4">
             <a
               href="/login"
-              className="bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition"
+              className="transition-all duration-300 py-4 rounded-2xl font-bold uppercase tracking-widest active:scale-95 shadow-lg"
+              style={{ 
+                backgroundColor: isDark ? "#2563eb" : "#1d4ed8",
+                color: "#ffffff",
+                boxShadow: isDark ? "0 10px 15px -3px rgba(0, 0, 0, 0.4)" : "0 10px 15px -3px rgba(37, 99, 235, 0.2)"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = isDark ? "#3b82f6" : "#2563eb";
+                e.currentTarget.style.transform = "translateY(-2px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = isDark ? "#2563eb" : "#1d4ed8";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
             >
               Go to Login
             </a>
 
             <a
               href="/"
-              className="border border-gray-300 py-3 rounded-xl font-bold hover:bg-gray-100 transition"
+              className="group relative py-3 rounded-xl font-bold transition-all duration-300 overflow-hidden text-center"
+              style={{ 
+                color: isDark ? "#94a3b8" : "#64748b",
+                border: isDark ? "1px solid #333" : "1px solid transparent" 
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = isDark ? "rgba(255,255,255,0.05)" : "#f8fafc";
+                e.currentTarget.style.color = isDark ? "#ffffff" : "#1e293b";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.color = isDark ? "#94a3b8" : "#64748b";
+              }}
             >
               Back to Home
             </a>
