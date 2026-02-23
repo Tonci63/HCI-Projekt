@@ -124,6 +124,7 @@ export default function ItinerariesClient({
   const stats = analyzePlan();
 
   return (
+    <>
     <div style={{ 
       backgroundColor: isDark ? "#121212" : "#ffffff", 
       color: isDark ? "#ffffff" : "#1e293b", 
@@ -339,5 +340,34 @@ export default function ItinerariesClient({
         }
       `}</style>
     </div>
+
+    {/* LOCKED MODAL */}
+    {locked && (
+      <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/40 backdrop-blur-sm">
+        <div className="bg-white dark:bg-[#1a1a1a] p-8 rounded-2xl shadow-xl text-center max-w-md w-[90%]">
+          <h2 className="text-xl font-bold mb-4">Login Required</h2>
+          <p className="mb-6 opacity-70">
+            You must log in to access your itineraries.
+          </p>
+
+          <div className="flex flex-col gap-3">
+            <a
+              href="/login"
+              className="bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition"
+            >
+              Go to Login
+            </a>
+
+            <a
+              href="/"
+              className="border border-gray-300 py-3 rounded-xl font-bold hover:bg-gray-100 transition"
+            >
+              Back to Home
+            </a>
+          </div>
+        </div>
+      </div>
+    )}
+  </>
   );
 }

@@ -44,9 +44,9 @@ export function Hero() {
               style={{ color: isDark ? "#ffffff" : "#000000" }}
               className="text-3xl md:text-5xl font-bold leading-tight"
             >
-              Discover Croatia —
-              <br />
               <span className="text-blue-600">
+                Discover Croatia — 
+                <br></br>
                 Plan Smarter, Travel Better
               </span>
             </h1>

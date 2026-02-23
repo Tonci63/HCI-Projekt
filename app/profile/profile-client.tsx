@@ -29,6 +29,11 @@ export default function ProfileClient({ user }: ProfileClientProps) {
   const borderColor = isDark ? "#333" : "#e2e8f0";
   const pageBg = isDark ? "#121212" : "#ffffff";
 
+  const handleLogout = async () => {
+    await authClient.signOut();
+    window.location.href = "/login";
+  };
+
   useEffect(() => {
     // Učitaj Large Font postavku
     const isLarge = localStorage.getItem("large-font") === "true";
@@ -221,7 +226,7 @@ export default function ProfileClient({ user }: ProfileClientProps) {
             </button>
           </div>
 
-          <button className="logout-btn" onClick={() => authClient.signOut()} style={{ 
+          <button className="logout-btn" onClick={handleLogout} style={{ 
             width: "100%", maxWidth: "400px", padding: "0.8rem", backgroundColor: "transparent", 
             color: "#ef4444", border: "2px solid #ef4444", borderRadius: "20px", 
             fontWeight: "900", cursor: "pointer", transition: "0.3s ease", 

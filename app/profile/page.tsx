@@ -4,18 +4,15 @@ import { redirect } from "next/navigation";
 import ProfileClient from "./profile-client";
 
 export default async function ProfilePage() {
+  const requestHeaders = await headers();
+
   const session = await auth.api.getSession({
-    headers: await headers(),
+    headers: requestHeaders,
   });
 
   if (!session?.user) {
     redirect("/login");
   }
 
-  // Maknuli smo getUserItineraryData jer nam trenutno ne treba u profilu
-  return (
-    <ProfileClient 
-      user={session.user} 
-    />
-  );
+  return <ProfileClient user={session.user} />;
 }
