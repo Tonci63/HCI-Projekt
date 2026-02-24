@@ -37,14 +37,14 @@ export function Navigation() {
         isDark ? "border-gray-800" : "border-gray-200"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div className="w-full px-6 h-16 flex items-center justify-between">
         
-        {/* LOGO I TEKST - POVEĆANA SAMO IKONA */}
+        {/* LOGO I TEKST */}
         <Link href="/" className="flex items-center gap-2 text-2xl font-bold tracking-tight">
           <img 
             src="/ikonica3.png" 
             alt="ViaCroatia Logo" 
-            className="w-10 h-10 object-contain" /* Povećano s 8 na 10 */
+            className="w-10 h-10 object-contain"
           />
           <span style={{ color: "#2563eb" }}>
             ViaCroatia
@@ -73,7 +73,7 @@ export function Navigation() {
           })}
         </ul>
 
-        {/* DESKTOP DESNA STRANA - POVEĆAN PROFIL */}
+        {/* DESKTOP DESNA STRANA */}
         <div className="hidden md:flex items-center">
           {user ? (
             <Link href="/profile" className="transition-transform hover:scale-110 active:scale-95">
@@ -92,13 +92,13 @@ export function Navigation() {
                   overflow: "hidden",
                   border: `2.5px solid ${isDark ? "#333" : "#e5e7eb"}`,
                   boxShadow: "0 4px 12px rgba(0,0,0,0.15)"
-                      }}
-                      >
-                      {user.image ? (
-                      <img src={user.image} alt="Profile" className="w-full h-full object-cover" />
-                                    ) : (
-                              (user.name?.charAt(0) || user.email?.charAt(0) || "U").toUpperCase()
-                                 )}
+                }}
+              >
+                {user.image ? (
+                  <img src={user.image} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  (user.name?.charAt(0) || user.email?.charAt(0) || "U").toUpperCase()
+                )}
               </div>
             </Link>
           ) : (
