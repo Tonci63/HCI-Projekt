@@ -158,7 +158,6 @@ function ExploreContent() {
                   </div>
                 )}
 
-                {/* --- RATING OSTAJE --- */}
                 {attr.rating && (
                   <div className={`absolute top-4 right-4 px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm transition-colors ${
                     isDark ? "bg-black/70 text-white" : "bg-white/90 text-black border border-gray-200"
@@ -179,7 +178,6 @@ function ExploreContent() {
                     View Details
                     <span className="ml-1 transition-transform duration-300 group-hover:translate-x-1">→</span>
                   </span>
-                  {/* REVIEWS SU MAKNUTI ODAVDE */}
                 </div>
               </div>
             </Link>
@@ -192,22 +190,28 @@ function ExploreContent() {
             {currentPage > 1 && (
               <Link
                 href={getHref(rawCategory, currentPage - 1)}
-                style={{ backgroundColor: isDark ? "#262626" : "#ffffff" }}
-                className="px-4 py-2 rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50 transition font-medium"
+                className={`px-4 py-2 rounded-lg border border-blue-600 font-medium transition-all duration-200 
+                  ${isDark 
+                    ? "bg-[#262626] text-blue-400 hover:bg-blue-600 hover:text-white" 
+                    : "bg-white text-blue-600 hover:bg-blue-600 hover:text-white"
+                  }`}
               >
                 ← Previous
               </Link>
             )}
 
-            <span className="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold">
+            <span className="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold shadow-md">
               {currentPage} / {totalPages}
             </span>
 
             {currentPage < totalPages && (
               <Link
                 href={getHref(rawCategory, currentPage + 1)}
-                style={{ backgroundColor: isDark ? "#262626" : "#ffffff" }}
-                className="px-4 py-2 rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50 transition font-medium"
+                className={`px-4 py-2 rounded-lg border border-blue-600 font-medium transition-all duration-200 
+                  ${isDark 
+                    ? "bg-[#262626] text-blue-400 hover:bg-blue-600 hover:text-white" 
+                    : "bg-white text-blue-600 hover:bg-blue-600 hover:text-white"
+                  }`}
               >
                 Next →
               </Link>
