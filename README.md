@@ -18,7 +18,7 @@
 
 ### Semester Project
 
-- Link to your production version: [**Production Version**](URL_TO_PRODUCTION_VERSION)
+- Link to your production version: [**Production Version**](https://hci-projekt-pink.vercel.app/)
 - Link to your final report: [**Final Report**](https://hexagonal-prawn-133.notion.site/Via-Croatia-Final-Report-30bd5ae2075480ad8340e8255c7423d1?pvs=4)
 
 ### Semester Assignments
